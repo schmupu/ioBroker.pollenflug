@@ -40,7 +40,8 @@
     "restartAdapters": []
   },
   "native": {
-    "pollInterval": "5"
+    "pollInterval": "5",
+    "region": ""
   },
   "objects": [],
   "instanceObjects": []

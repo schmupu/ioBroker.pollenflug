@@ -1,6 +1,6 @@
 ![Logo](admin/pollenflug.png)
 
-# ioBroker adapter zur Anzeige des Pollenflug Gefahrenindex in Deutschland
+# Pollenflug Gefahrenindex in Deutschland
 
 
 [![Travis CI Build Status](https://travis-ci.org/schmupu/ioBroker.pollenflug.svg?branch=master)](https://travis-ci.org/schmupu/ioBroker.pollenflug)
@@ -14,7 +14,12 @@
 
 ## Install & Configuration
 
-...
+Der Deutsche Wetterdienst erstellt täglich Vorhersagen des Pollenflug-Gefahrenindex.
+Vorhergesagt werden die Pollenarten: Hasel, Erle, Esche, Birke, Gräser, Roggen, Beifuß und
+Ambrosia für heute und morgen, am Freitag auch für übermorgen (Sonntag).
+Aktualisierung täglich vormittags.
+Informationen zu den Pollenflugbereichen finden Sie unter: https://www.dwd.de/pollenflug
+
 
 ## Changelog
 
