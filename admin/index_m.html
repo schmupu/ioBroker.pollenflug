@@ -1,0 +1,289 @@
+<html>
+
+<head>
+  <!-- these 4 files always have to be included -->
+  <link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css">
+  <link rel="stylesheet" type="text/css" href="../../css/adapter.css" />
+  <script type="text/javascript" src="../../lib/js/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../../socket.io/socket.io.js"></script>
+  <!-- these files always have to be included -->
+  <script type="text/javascript" src="../../js/translate.js"></script>
+  <script type="text/javascript" src="../../lib/js/materialize.js"></script>
+  <script type="text/javascript" src="../../js/adapter-settings.js"></script>
+  <script type="text/javascript" src="words.js"></script>
+
+
+  <script type="text/javascript">
+    var devices = [];
+    var active = false;
+    var g_onChange;
+    var SEP = '_';
+
+    if (typeof _ !== 'function') _ = translateWord;
+
+
+    function load(settings, onChange) {
+      g_onChange = onChange;
+
+
+      getIPs(function (ips) {
+        for (var i = 0; i < ips.length; i++) {
+          $('#bind').append('<option value="' + ips[i].address + '">' + ips[i].name + '</option>');
+        }
+        $('#bind.value').val(settings.bind).select();
+      });
+
+
+      $('#values').on('click', function () {
+        //checkDevices();
+      });
+
+      function checkDevices() {
+        console.log("Ceck devices");
+        var oldDev = table2values('values');
+        var newDev = [];
+        var tmpIp = [];
+        for (var i = 0; i < oldDev.length; i++) {
+          console.log(JSON.stringify(tmpIp));
+          if (!tmpIp.includes(oldDev[i].ip)) {
+            tmpIp.push(oldDev[i].ip);
+            newDev.push(oldDev[i]);
+            if (i === oldDev.length - 1) {
+              console.log("safe");
+              values2table('values', newDev, true);
+            }
+          }
+        }
+      };
+      //checkDevices();
+
+      socket.emit('getState', 'system.adapter.' + adapter + '.' + instance + '.alive', function (err, state) {
+        active = /*common.enabled ||*/ (state && state.val);
+      });
+
+      changed = true;
+      g_onChange = onChange;
+
+      function getVal(id) {
+        var ar = id.split(SEP);
+        var obj = settings;
+        for (var i = 0; i < ar.length - 1; i++) {
+          if (obj[ar[i]] === undefined) obj[ar[i]] = {};
+          obj = obj[ar[i]];
+        }
+        return obj[ar[ar.length - 1]];
+      }
+
+      function forAllKeys(obj, s, cb) {
+        var sep = SEP; //'.';
+        if (typeof s === 'function') {
+          cb = s;
+          s = '';
+        }
+        for (var i in obj) {
+          if (typeof obj[i] === 'object') {
+            if (Array.isArray(obj[i])) continue;
+            forAllKeys(obj[i], s ? s + sep + i : i, cb)
+          } else {
+            cb && cb(s ? s + sep + i : i);
+          }
+        }
+      }
+
+      //for (var key in settings) {
+      forAllKeys(settings, function (key) {
+        // example: select elements with id=key and class=value and insert value
+        var val = getVal(key);
+        if ($('#' + key + '.value').attr('type') == 'checkbox') {
+          $('#' + key + '.value').prop('checked', val).change(function () {
+            if ($('#auth').prop('checked')) {
+              $('#secure').prop('checked', true);
+            }
+            onChange();
+            //showHideSettings();
+          });
+        } else {
+          $('#' + key + '.value').val(val).change(function () {
+            onChange();
+          }).keyup(function () {
+            onChange();
+          });
+        }
+      });
+      // Set default language
+      if (!settings.language) {
+        settings.language = systemLang || 'en';
+        $('#language').val(settings.language).trigger('change');
+      }
+      devices = settings.keys; // || [ {name: '', ip: "", mac: ""} ];
+      values2table('values', devices, onChange);
+      //changed = true;
+      onChange(false);
+    }
+
+    function setVal(obj, id, val) {
+      var ar = id.split(SEP);
+      for (var i = 0; i < ar.length - 1; i++) {
+        if (obj[ar[i]] === undefined) obj[ar[i]] = {};
+        obj = obj[ar[i]];
+      }
+      obj[ar[ar.length - 1]] = val;
+    }
+
+    function save(callback) {
+      var obj = {};
+      changed = true;
+      $('.value').each(function () {
+        var $this = $(this),
+          val;
+        switch ($this.attr('type')) {
+          case 'checkbox':
+            val = $this.prop('checked');
+            break;
+          case 'number':
+          case 'value':
+            val = ~~$this.val();
+            break;
+          default:
+            val = $this.val();
+        }
+        setVal(obj, $this.attr('id'), val);
+      });
+      obj.keys = table2values('values');
+      callback(obj);
+    }
+  </script>
+  <style>
+    .loader {
+      border: 4px solid #b8d1f3;
+      /* Light grey */
+      border-top: 4px solid #3498db;
+      /* Blue */
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+
+<body>
+  <!-- you have to put your config page in a div with id adapter-container -->
+  <div class="m adapter-container">
+
+    <div class="row">
+    </div>
+
+    <div class="row">
+      <div class="input-field col s12 m4 l4">
+        <select id="holiday" class="value">
+          <option value="BW">Baden-Würtemberg</option>
+          <option value="BY">Bayern</option>
+          <option value="BE">Berlin</option>
+          <option value="BB">Brandenburg</option>
+          <option value="HB">Bremen</option>
+          <option value="HH">Hamburg</option>
+          <option value="HE">Hessen</option>
+          <option value="MV">Mecklenburg-vorpommern</option>
+          <option value="NI">Niedersachsen</option>
+          <option value="NW">Nordrhein-Westfalen</option>
+          <option value="RP">Rheinland-Pfalz</option>
+          <option value="SL">Saarland</option>
+          <option value="SN">Sachsen</option>
+          <option value="ST">Sachsen-Anhalt</option>
+          <option value="SH">Schleswig-Holstein</option>
+          <option value="TH">Thüringen</option>
+        </select>
+        <label class="translate" for="holiday">holiday</label>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="input-field col s12">
+        <input class="value" id="simulation" type="checkbox" />
+        <label for="simulation" class="translate">simulation</label>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="input-field col s12">
+        <input class="value" id="executeset" type="checkbox" />
+        <label for="executeset" class="translate">Execution Set</label>
+      </div>
+    </div>
+
+    <!--
+    <div class="row">
+
+      <div class="col s12">
+        <ul class="tabs">
+          <li class="tab col s2"><a href="#tab-main" class="translate active">Main settings</a></li>
+        </ul>
+      </div>
+
+      <div id="tab-main" class="col s12 page">
+
+        <div class="row">
+          <div class="input-field col s6">
+            <img src="ruleset.png" class="logo">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col s12 m8 l5">
+            <input class="value" id="ip" type="text" />
+            <label class="translate" for="ip">IP</label>
+          </div>
+          <div class="col s12 m4 l1">
+            <input class="value number" id="port" min="1" max="65565" type="number" />
+            <label class="translate" for="port">Port</label>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col s12 m8 l3">
+            <input class="value" id="user" type="text" />
+            <label class="translate" for="user">Username (Manager)</label>
+          </div>
+          <div class="col s12 m8 l3">
+            <input class="value" id="password" type="password" />
+            <label class="translate" for="password">Password (Manager)</label>
+          </div>
+        </div>
+
+        <div class="row">
+        </div>
+
+        <div class="row">
+          <div class="col s12 m8 l5">
+            <input class="value" id="path" type="text" />
+            <label class="translate" for="path">Path for temporary audio files. Must be accessible and authorized for ruleset and ioBroker</label>
+          </div>
+        </div>
+
+        <div class="row">
+        </div>
+
+        <div class="row">
+          <div class="col s12">
+            <p class="translate">on save adapter restarts with new config immediately</p>
+          </div>
+        </div>
+      </div>
+    </div>
+      -->
+  </div>
+</body>
+
+</html>

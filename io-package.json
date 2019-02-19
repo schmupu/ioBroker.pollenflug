@@ -1,0 +1,47 @@
+{
+  "common": {
+    "name": "pollenflug",
+    "version": "0.1.2",
+    "title": "Pollenflug Gefahrenindex in Deutschland",
+    "news": {
+      "0.1.2": {
+        "en": "First version of pollen flight hazard index in Germany",
+        "de": "Erste Version vom Pollenflug Gefahrenindex in Deutschland"
+      }
+    },
+    "titleLang": {
+      "en": "Pollenflug Gefahrenindex in Deutschland",
+      "de": "Pollen flight hazard index in Germany"
+    },
+    "desc": {
+      "en": "Pollenflug Gefahrenindex in Deutschland",
+      "de": "Pollen flight hazard index in Germany"
+    },
+    "license": "MIT",
+    "authors": [
+      "Thorsten Stueben <thorsten@stueben.de>"
+    ],
+    "platform": "Javascript/Node.js",
+    "mode": "daemon",
+    "messagebox": true,
+    "stopBeforeUpdate": true,
+    "subscribe": "messagebox",
+    "icon": "pollenflug.png",
+    "materialize": true,
+    "enabled": true,
+    "compact": true,
+    "extIcon": "https://raw.githubusercontent.com/schmupu/ioBroker.pollenflug/master/admin/pollenflug.png",
+    "keywords": [
+      "pollenflug"
+    ],
+    "readme": "https://github.com/schmupu/ioBroker.pollenflug/blob/master/README.md",
+    "loglevel": "info",
+    "type": "weather",
+    "restartAdapters": []
+  },
+  "native": {
+    "pollInterval": "5"
+  },
+  "objects": [],
+  "instanceObjects": []
+}
