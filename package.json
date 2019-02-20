@@ -1,7 +1,7 @@
 {
   "name": "iobroker.pollenflug",
   "version": "0.1.2",
-  "description": "Pollenflug Gefahrenindex in Deutschland",
+  "description": "Pollenflug Gefahrenindex",
   "author": {
     "name": "Thorsten Stueben",
     "email": "thorsten@stueben.de"

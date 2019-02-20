@@ -2,20 +2,20 @@
   "common": {
     "name": "pollenflug",
     "version": "0.1.2",
-    "title": "Pollenflug Gefahrenindex in Deutschland",
+    "title": "Pollen flight risk index",
     "news": {
       "0.1.2": {
-        "en": "First version of pollen flight hazard index in Germany",
-        "de": "Erste Version vom Pollenflug Gefahrenindex in Deutschland"
+        "en": "First version of pollen flight risk index",
+        "de": "Erste Version vom Pollenflug Gefahrenindex"
       }
     },
     "titleLang": {
-      "en": "Pollenflug Gefahrenindex in Deutschland",
-      "de": "Pollen flight hazard index in Germany"
+      "en": "Pollenflug Gefahrenindex",
+      "de": "Pollen flight risk index"
     },
     "desc": {
       "en": "Pollenflug Gefahrenindex in Deutschland",
-      "de": "Pollen flight hazard index in Germany"
+      "de": "Pollen flight risk index"
     },
     "license": "MIT",
     "authors": [

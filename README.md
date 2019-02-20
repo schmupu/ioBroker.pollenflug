@@ -1,6 +1,6 @@
 ![Logo](admin/pollenflug.png)
 
-# Pollenflug Gefahrenindex in Deutschland
+# Pollen risk index
 
 
 [![Travis CI Build Status](https://travis-ci.org/schmupu/ioBroker.pollenflug.svg?branch=master)](https://travis-ci.org/schmupu/ioBroker.pollenflug)
@@ -14,11 +14,11 @@
 
 ## Install & Configuration
 
-Der Deutsche Wetterdienst erstellt täglich Vorhersagen des Pollenflug-Gefahrenindex.
-Vorhergesagt werden die Pollenarten: Hasel, Erle, Esche, Birke, Gräser, Roggen, Beifuß und
-Ambrosia für heute und morgen, am Freitag auch für übermorgen (Sonntag).
-Aktualisierung täglich vormittags.
-Informationen zu den Pollenflugbereichen finden Sie unter: https://www.dwd.de/pollenflug
+The German Weather Service DWD prepares daily forecasts of the pollen risk index.
+The pollen species are predicted: hazel, alder, ash, birch, grass, rye, mugwort and
+ambrosia for today and tomorrow, on Friday also for the day after tomorrow (Sunday).
+Updated daily in the morning.
+Information on the pollen counties can be found at: https://www.dwd.de/pollenflug
 
 
 ## Changelog
