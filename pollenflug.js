@@ -36,7 +36,7 @@ function startAdapter(options) {
   // Listen for sendTo messages
   // *****************************************************************************************************
   adapter.on('message', async (msg) => {
-   
+
   });
 
   // *****************************************************************************************************
@@ -52,46 +52,84 @@ function startAdapter(options) {
 
 async function createObjects(content) {
   try {
-    if(content) {
-      for(let i in content) {
-        let region     = content[i].region_id;
-        let partregion = content[i].partregion_id;
-        let deviceid = adapter.namespace + '.region#' + region;
-        let channelid = deviceid + '.partregion#' + partregion;
-        await this.adapter.setObjectNotExistsAsync(deviceid, {
+    if (content) {
+      for (let i in content) {
+        let entry =  content[i];
+        let partregion_id = entry.partregion_id != -1 ? entry.partregion_id : entry.region_id;
+        let partregion_name = entry.partregion_id != -1  ? entry.region_name + ' - ' + entry.partregion_name : entry.region_name;
+        let deviceid = adapter.namespace + '.region#' + partregion_id;
+        await adapter.setObjectNotExistsAsync(deviceid, {
           type: 'device',
           common: {
-            name: 'Rules' + region
+            name: partregion_name
           }
         });
-        await this.adapter.setObjectNotExistsAsync(channelid, {
-          type: 'channel',
-          common: {
-            name: 'Rule ' + partregion
+        for(let j in entry.Pollen) {
+          let pollen = entry.Pollen[j];
+          let channelid = deviceid + '.' + j;
+          await adapter.setObjectNotExistsAsync(channelid, {
+            type: 'channel',
+            common: {
+              name: j
+            }
+          });
+          for(let k in pollen) {
+            let riskindex = pollen[k];
+            let stateid = channelid + '.' + k;
+            await adapter.setObjectNotExistsAsync(stateid, {
+              type: 'state',
+              common: {
+                name: k,
+                type: 'number'
+              },
+              native: {}
+            });
+            // await adapter.setStateAsync(stateid, {val: riskindex, ack: true} );
           }
-        });
+        }
       }
     }
   } catch (error) {
-    // 
+    adapter.log.error('Error creating Objects');
   }
+}
 
-
+async function setStates(content) {
+  try {
+    if (content) {
+      for (let i in content) {
+        let entry =  content[i];
+        let partregion_id = entry.partregion_id != -1 ? entry.partregion_id : entry.region_id;
+        let deviceid = adapter.namespace + '.region#' + partregion_id;
+        for(let j in entry.Pollen) {
+          let channelid = deviceid + '.' + j;
+          let pollen = entry.Pollen[j];
+          for(let k in pollen) {
+            let riskindex = pollen[k];
+            let stateid = channelid + '.' + k;
+            await adapter.setStateAsync(stateid, {val: riskindex, ack: true} );
+          }
+        }
+      }
+    }
+  } catch (error) {
+    adapter.log.error('Error set State');
+  }
 }
 
 
 function getPollenflugForRegion(data, region) {
   let dataregion = [];
-  if(data && data.content) {
+  if (data && data.content) {
     let content = data.content;
-    for(let i in content) {
-      if(content[i].region_id == region) {
+    for (let i in content) {
+      if (!region || region == '*' || content[i].region_id == region) {
         dataregion.push(content[i]);
-      } 
+      }
     }
   }
   return dataregion;
-} 
+}
 
 async function pollenflugRequest() {
   let result;
@@ -100,7 +138,7 @@ async function pollenflugRequest() {
     result = await request(url, { method: 'GET', json: true });
   } catch (error) {
     adapter.log.error('Error requesting URL ' + url);
-  } 
+  }
   return result;
 }
 
@@ -117,6 +155,7 @@ async function main() {
   let result = await pollenflugRequest();
   let content = getPollenflugForRegion(result, adapter.config.region);
   await createObjects(content);
+  await setStates(content);
   adapter.log.info(JSON.stringify(content));
 }
 
