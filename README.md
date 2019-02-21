@@ -19,6 +19,23 @@ Requires node.js 8.0 or higher and Admin v3! Select the county in the ioBroker a
 configuration. You will get the pollen risk index for this county. The index will be updated 
 once the day, around 11 o'clock.
 
+Provides counties:
+* Schleswig-Holstein und Hamburg
+* Mecklenburg-Vorpommern
+* Niedersachsen und Bremen
+* Nordrhein-Westfalen
+* Brandenburg und Berlin
+* Sachsen-Anhalt
+* Thüringen
+* Sachsen
+* Hessen
+* Rheinland-Pfalz und Saarland
+* Baden-Württemberg
+* Bayern
+
+![ioBroker1](docs/iobroker-pollenflug1.png)
+
+
 | Index | description                     	|
 |-----	|---------------------------------	|
 | -1   	| no data available                 |
@@ -29,6 +46,8 @@ once the day, around 11 o'clock.
 | 2   	| average pollen pollution        	|
 | 2.5 	| medium to high pollen pollution 	|
 | 3   	| high pollen pollution           	|
+
+![ioBroker2](docs/iobroker-pollenflug2.png)
 
 
 ## Changelog
