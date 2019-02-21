@@ -44,13 +44,18 @@ function startAdapter(options) {
   // start here!
   // *****************************************************************************************************
   adapter.on('ready', async () => {
+    adapter.log.info('Starting Adapter ' + adapter.namespace + ' in version ' + adapter.version);
+    if (!semver.satisfies(process.version, adapterNodeVer)) {
+      adapter.log.error(`Required node version ${adapterNodeVer} not satisfied with current version ${process.version}.`);
+      setTimeout(() => adapter.stop());
+    }
     await main();
   });
   return adapter;
 }
 
 function datePlusdDays(date, number) {
-  let mydate = new Date(date.getTime()); 
+  let mydate = new Date(date.getTime());
   mydate.setDate(mydate.getDate() + number);
   return mydate;
 }
@@ -91,10 +96,13 @@ function getRiskNumber(index) {
 // 21.02.2019 11:00 Uhr -> Date Object
 // *****************************************************************************************************
 function getDate(datum) {
-  // let seps = [' ', '\\\.', '\\\+', '-', '\\\(', '\\\)', '\\*', '/', ':', '\\\?'];
-  let seps = [' ', '\\.', '\\+', '-', '\\(', '\\)', '\\*', '/', ':', '\\?'];
-  let fields = datum.split(new RegExp(seps.join('|'), 'g'));
-  let mydate = new Date(fields[0], fields[1], fields[2], fields[3], fields[4]);
+  let mydate;
+  if (datum) {
+    // let seps = [' ', '\\\.', '\\\+', '-', '\\\(', '\\\)', '\\*', '/', ':', '\\\?'];
+    let seps = [' ', '\\.', '\\+', '-', '\\(', '\\)', '\\*', '/', ':', '\\?'];
+    let fields = datum.split(new RegExp(seps.join('|'), 'g'));
+    mydate = new Date(fields[0], fields[1] - 1, fields[2], fields[3], fields[4]);
+  }
   return mydate;
 }
 
@@ -104,9 +112,37 @@ function getWeekday(datum) {
   return n;
 }
 
-async function createObjects(content) {
+async function deleteObjects(result) {
   try {
-    if (content) {
+    if (result) {
+      let content = getPollenflugForRegion(result, adapter.config.region) || [];
+      let devices = await adapter.getDevicesAsync();
+      for (let j in devices) {
+        let id = devices[j]._id.replace(adapter.namespace + '.', '');
+        let found = false;
+        for (let i in content) {
+          let entry = content[i];
+          let partregion_id = entry.partregion_id != -1 ? entry.partregion_id : entry.region_id;
+          let deviceid = 'region#' + partregion_id;
+          if (deviceid === id || id === 'info') {
+            found = true;
+            break;
+          }
+        }
+        if (found === false) {
+          await adapter.deleteDeviceAsync(id);
+        }
+      }
+    }
+  } catch (error) {
+    adapter.log.error('Error deleting Objects');
+  }
+}
+
+async function createObjects(result) {
+  try {
+    if (result) {
+      let content = getPollenflugForRegion(result, adapter.config.region) || [];
       let promise = [];
       for (let i in content) {
         let entry = content[i];
@@ -118,30 +154,6 @@ async function createObjects(content) {
           common: {
             name: partregion_name
           }
-        });
-        await adapter.setObjectNotExistsAsync('today', {
-          type: 'state',
-          common: {
-            name: 'Today',
-            type: 'text'
-          },
-          native: {}
-        });
-        await adapter.setObjectNotExistsAsync('tomorrow', {
-          type: 'state',
-          common: {
-            name: 'Tomorow',
-            type: 'text'
-          },
-          native: {}
-        });
-        await adapter.setObjectNotExistsAsync('dayaftertoday', {
-          type: 'state',
-          common: {
-            name: 'Day after today',
-            type: 'text'
-          },
-          native: {}
         });
         for (let j in entry.Pollen) {
           let pollen = entry.Pollen[j];
@@ -178,28 +190,47 @@ async function createObjects(content) {
         }
       }
       await Promise.all(promise);
+      await adapter.setObjectNotExistsAsync('info', {
+        type: 'device',
+        common: {
+          name: 'Informationen'
+        }
+      });
+      await adapter.setObjectNotExistsAsync('info.today', {
+        type: 'state',
+        common: {
+          name: 'Today',
+          type: 'string'
+        },
+        native: {}
+      });
+      await adapter.setObjectNotExistsAsync('info.tomorrow', {
+        type: 'state',
+        common: {
+          name: 'Tomorow',
+          type: 'string'
+        },
+        native: {}
+      });
+      await adapter.setObjectNotExistsAsync('info.dayaftertoday', {
+        type: 'state',
+        common: {
+          name: 'Day after today',
+          type: 'string'
+        },
+        native: {}
+      });
     }
   } catch (error) {
     adapter.log.error('Error creating Objects');
   }
 }
 
-async function setDays(result) {
-  let stateid;
-  let today = getDate(result.last_update);
-  let tomorrow = datePlusdDays(today, 1);
-  let dayaftertoday = datePlusdDays(today, 2);
-  stateid = 'today';
-  await adapter.setStateAsync(stateid, { val: today, ack: true });
-  stateid = 'tomorrow';
-  await adapter.setStateAsync(stateid, { val: tomorrow, ack: true });
-  stateid = 'dayaftertoday';
-  await adapter.setStateAsync(stateid, { val: dayaftertoday, ack: true });
-}
 
-async function setStates(content) {
+async function setStates(result) {
   try {
-    if (content) {
+    if (result) {
+      let content = getPollenflugForRegion(result, adapter.config.region) || [];
       let promise = [];
       for (let i in content) {
         let entry = content[i];
@@ -217,10 +248,16 @@ async function setStates(content) {
           }
         }
       }
+      let today = getDate(result.last_update);
+      let tomorrow = datePlusdDays(today, 1);
+      let dayaftertoday = datePlusdDays(today, 2);
+      promise.push(await adapter.setStateAsync('info.today', { val: today, ack: true }));
+      promise.push(await adapter.setStateAsync('info.tomorrow', { val: tomorrow, ack: true }));
+      promise.push(await adapter.setStateAsync('info.dayaftertoday', { val: dayaftertoday, ack: true }));
       await Promise.all(promise);
     }
   } catch (error) {
-    adapter.log.error('Error set State');
+    adapter.log.error('Error setting States');
   }
 }
 
@@ -242,33 +279,48 @@ async function pollenflugRequest() {
   let result;
   let url = 'https://opendata.dwd.de/climate_environment/health/alerts/s31fg.json';
   try {
-    result = await request(url, { method: 'GET', json: true });
+    result = await request(url, { method: 'GET', json: true, timeout: 5000 });
   } catch (error) {
     adapter.log.error('Error requesting URL ' + url);
   }
   return result;
 }
 
+async function polling(result) {
+  if (!result) {
+    result = await pollenflugRequest();
+  }
+  let polltime = 60 * 1000;
+  if (result) {
+    await setStates(result);
+    let now = new Date();
+    let next_update = getDate(result.next_update);
+    polltime = (next_update.getTime() - now.getTime()) + 60;
+    if (polltime < 0 || polltime >= 2147483647) {
+      polltime = 60 * 1000;
+    }
+  }
+  setTimeout(async () => {
+    adapter.log.info('Requesting DWD data');
+    await polling(result);
+  }, polltime);
+}
+
 // *****************************************************************************************************
 // Main
 // *****************************************************************************************************
 async function main() {
-  adapter.log.info('Starting Adapter ' + adapter.namespace + ' in version ' + adapter.version);
-  if (!semver.satisfies(process.version, adapterNodeVer)) {
-    adapter.log.error(`Required node version ${adapterNodeVer} not satisfied with current version ${process.version}.`);
-    setTimeout(() => adapter.stop());
-  }
-
   let result = await pollenflugRequest();
-  let content = getPollenflugForRegion(result, adapter.config.region);
-  await createObjects(content);
-  await setStates(content);
-  await setDays(result);
-  let mydate1 = getDate(result.last_update);
-  let mydate2 = getDate(result.next_update);
-  let wochentag = getWeekday(mydate2);
-  mydate1.setDate(mydate1.getDate() + 10);
-  adapter.log.info(JSON.stringify(content));
+  if (result) {
+    await deleteObjects(result);
+    await createObjects(result);
+    await polling(result);
+  } else {
+    adapter.log.error('Error reading pollen risk index');
+    setTimeout(async () => {
+      await main();
+    }, 10 * 1000);
+  }
 }
 
 // If started as allInOne mode => return function to create instance

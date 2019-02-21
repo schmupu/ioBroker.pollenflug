@@ -15,7 +15,21 @@ Updated daily in the morning.
 Information on the pollen counties can be found at: https://www.dwd.de/pollenflug
 
 ## Install & Configuration
-Requires node.js 8.0 or higher and Admin v3!
+Requires node.js 8.0 or higher and Admin v3! Select the county in the ioBroker adapter
+configuration. You will get the pollen risk index for this county. The index will be updated 
+once the day, around 11 o'clock.
+
+| Index | description                     	|
+|-----	|---------------------------------	|
+| -1   	| no data available                 |
+| 0   	| low pollen pollution            	|
+| 0.5 	| low to medium pollen pollution  	|
+| 1   	| low pollen pollution            	|
+| 1.5 	| low to medium pollen pollution  	|
+| 2   	| average pollen pollution        	|
+| 2.5 	| medium to high pollen pollution 	|
+| 3   	| high pollen pollution           	|
+
 
 ## Changelog
 
