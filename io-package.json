@@ -10,12 +10,12 @@
       }
     },
     "titleLang": {
-      "en": "Pollenflug Gefahrenindex",
-      "de": "Pollen flight risk index"
+      "en": "Pollen flight risk index",
+      "de": "Pollenflug Gefahrenindex"
     },
     "desc": {
-      "en": "Pollenflug Gefahrenindex in Deutschland",
-      "de": "Pollen flight risk index"
+      "en": "Pollen flight risk index",
+      "de": "Pollenflug Gefahrenindex in Deutschland"
     },
     "license": "MIT",
     "authors": [
