@@ -9,7 +9,7 @@
 [![NPM](https://nodei.co/npm/iobroker.pollenflug.png?downloads=true)](https://nodei.co/npm/iobroker.pollenflug/)
 
 
-![DWDLogo](admin/dwdlogo.png)
+![DWDLogo](docs/dwdlogo.png)
 
 The German Weather Service DWD prepares daily forecasts of the pollen risk index.
 The pollen species are predicted: hazel, alder, ash, birch, grass, rye, mugwort and
