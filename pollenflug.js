@@ -82,14 +82,14 @@ function getRiskIndexText(index, plant) {
     '2-3': 'medium to high pollen concentration',
     '3': 'high pollen concentration'
   };
-  if (systemLanguage === 'DE') { 
+  if (systemLanguage === 'DE') {
     text = indextext_de[index] || 'keine Daten vorhanden';
-    if(plant) {
+    if (plant) {
       text = text + ' für ' + plant;
     }
   } else {
     text = indextext_en[index] || 'no data available';
-    if(plant) {
+    if (plant) {
       text = text + ' for ' + plant;
     }
   }
@@ -315,7 +315,7 @@ function getPollenflugForRegion(data, region) {
 
 async function pollenflugRequest() {
   let result;
-  let url = adapter.config.url;
+  let url = adapter.config.url || 'https://opendata.dwd.de/climate_environment/health/alerts/s31fg.json';
   try {
     adapter.log.info('Requesting DWD pollen information now.');
     result = await request(url, { method: 'GET', json: true, timeout: 5000 });
