@@ -1,10 +1,10 @@
 {
   "common": {
     "name": "pollenflug",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "title": "Pollen flight risk index",
     "news": {
-      "0.1.4": {
+      "0.1.5": {
         "en": "First version of pollen flight risk index",
         "de": "Erste Version vom Pollenflug Gefahrenindex"
       }

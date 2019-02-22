@@ -8,11 +8,15 @@
 
 [![NPM](https://nodei.co/npm/iobroker.pollenflug.png?downloads=true)](https://nodei.co/npm/iobroker.pollenflug/)
 
+
+![DWDLogo](admin/dwdlogo.png)
+
 The German Weather Service DWD prepares daily forecasts of the pollen risk index.
 The pollen species are predicted: hazel, alder, ash, birch, grass, rye, mugwort and
 ambrosia for today and tomorrow, on Friday also for the day after tomorrow (Sunday).
 Updated daily in the morning.
 Information on the pollen counties can be found at: https://www.dwd.de/pollenflug
+Copyright of used pollen data: © Deutscher Wetterdienst (Quelle: Deutscher Wetterdienst)
 
 ## Install & Configuration
 Requires node.js 8.0 or higher and Admin v3! Select the county in the ioBroker adapter
@@ -39,6 +43,8 @@ Provided German counties:
 
 ![ioBroker1](docs/iobroker-pollenflug1.png)
 
+The original DWD risk index 0-1, 1-2 and 2-3 are changed to 0.5, 1.5 and 2.5. 
+This format can more simply used in ioBroker.  
 
 | Index | description                       	|
 |-----	|------------------------------------ |
@@ -56,7 +62,7 @@ Provided German counties:
 
 ## Changelog
 
-### 0.1.4 (23.11.2018)
+### 0.1.5 (23.11.2018)
 * (Stübi) First Version of pollen index adapter
 
 
