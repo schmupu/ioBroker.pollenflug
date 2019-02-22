@@ -62,7 +62,7 @@ This format can more simply used in ioBroker.
 
 ## Changelog
 
-### 0.1.5 (23.11.2018)
+### 0.1.6 (23.11.2018)
 * (Stübi) First Version of pollen index adapter
 
 

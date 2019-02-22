@@ -143,13 +143,13 @@ async function deleteObjects(result) {
             break;
           }
         }
-        if (found === false) {
+        if (found === false && id) {
           await adapter.deleteDeviceAsync(id);
         }
       }
     }
   } catch (error) {
-    adapter.log.error('Error deleting Objects');
+    adapter.log.error('Error deleting Objects' + error);
   }
 }
 
