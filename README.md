@@ -49,8 +49,8 @@ This format can more simply used in ioBroker.
 | Index | description                       	|
 |-----	|------------------------------------ |
 | -1   	| no data available                   |
-| 0   	| low pollen concentration         	  |
-| 0.5 	| low to medium pollen concentration  |
+| 0   	| none pollen concentration         	|
+| 0.5 	| none to low pollen concentration    |
 | 1   	| low pollen concentration        	  |
 | 1.5 	| low to medium pollen concentration	|
 | 2   	| average pollen concentration      	|

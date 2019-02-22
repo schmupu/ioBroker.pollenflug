@@ -218,14 +218,14 @@ async function createObjects(result) {
           }
         }
       }
-      await Promise.all(promise);
+
       await adapter.setObjectNotExistsAsync('info', {
         type: 'device',
         common: {
           name: 'Information'
         }
       });
-      await adapter.setObjectNotExistsAsync('info.today', {
+      promise.push(await adapter.setObjectNotExistsAsync('info.today', {
         type: 'state',
         common: {
           name: 'Today',
@@ -235,8 +235,8 @@ async function createObjects(result) {
           write: false
         },
         native: {}
-      });
-      await adapter.setObjectNotExistsAsync('info.tomorrow', {
+      }));
+      promise.push(await adapter.setObjectNotExistsAsync('info.tomorrow', {
         type: 'state',
         common: {
           name: 'Tomorow',
@@ -246,8 +246,8 @@ async function createObjects(result) {
           write: false
         },
         native: {}
-      });
-      await adapter.setObjectNotExistsAsync('info.dayaftertomorrow', {
+      }));
+      promise.push(await adapter.setObjectNotExistsAsync('info.dayaftertomorrow', {
         type: 'state',
         common: {
           name: 'Day after tomorrow',
@@ -257,7 +257,8 @@ async function createObjects(result) {
           write: false
         },
         native: {}
-      });
+      }));
+      await Promise.all(promise);
     }
   } catch (error) {
     adapter.log.error('Error creating Objects ' + error);
