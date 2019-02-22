@@ -127,15 +127,14 @@ function getWeekday(datum) {
 }
 
 async function deleteObjects(result) {
-  let id;
-  let sid;
   try {
     if (result) {
+      let promise = [];
+      let id;
       let content = getPollenflugForRegion(result, adapter.config.region) || [];
       let devices = await adapter.getDevicesAsync();
       for (let j in devices) {
         id = devices[j]._id.replace(adapter.namespace + '.', '');
-        sid = devices[j]._id;
         let found = false;
         for (let i in content) {
           let entry = content[i];
@@ -147,14 +146,13 @@ async function deleteObjects(result) {
           }
         }
         if (found === false && id) {
-          adapter.deleteDevice(id, ()=>{});
-          // await adapter.deleteDeviceAsync(id);
-          // await adapter.delObjectAsync(id);
+          promise.push(await adapter.deleteDeviceAsync(id));
         }
       }
+      await Promise.all(promise);
     }
   } catch (error) {
-    adapter.log.error('Error deleting Objects ' + id + ' / ' + error);
+    adapter.log.error('Error deleting Objects ' + error);
   }
 }
 
@@ -192,6 +190,8 @@ async function createObjects(result) {
                 name: k,
                 type: 'number',
                 role: 'state',
+                read: true,
+                write: false
               },
               native: {}
             }));
@@ -201,7 +201,9 @@ async function createObjects(result) {
               common: {
                 name: k,
                 type: 'string',
-                role: 'state'
+                role: 'state',
+                read: true,
+                write: false
               },
               native: {}
             }));
@@ -220,7 +222,9 @@ async function createObjects(result) {
         common: {
           name: 'Today',
           type: 'string',
-          role: 'date'
+          role: 'date',
+          read: true,
+          write: false
         },
         native: {}
       });
@@ -229,7 +233,9 @@ async function createObjects(result) {
         common: {
           name: 'Tomorow',
           type: 'string',
-          role: 'date'
+          role: 'date',
+          read: true,
+          write: false
         },
         native: {}
       });
@@ -238,7 +244,9 @@ async function createObjects(result) {
         common: {
           name: 'Day after tomorrow',
           type: 'string',
-          role: 'date'
+          role: 'date',
+          read: true,
+          write: false
         },
         native: {}
       });
