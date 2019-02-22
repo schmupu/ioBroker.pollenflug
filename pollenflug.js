@@ -6,7 +6,6 @@
 'use strict';
 
 const utils = require('@iobroker/adapter-core');
-const dwd = require(__dirname + '/lib/dwd');
 const request = require('request-promise-native');
 const adapterName = require('./package.json').name.split('.').pop();
 const adapterNodeVer = require('./package.json').engines.node;
