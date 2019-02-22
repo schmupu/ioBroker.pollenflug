@@ -62,7 +62,8 @@ function datePlusdDays(date, number) {
   return mydate;
 }
 
-function getRiskIndexText(index) {
+function getRiskIndexText(index, plant) {
+  let text;
   let indextext_de = {
     '0': 'keine Belastung',
     '0-1': 'keine bis geringe Belastung',
@@ -81,11 +82,18 @@ function getRiskIndexText(index) {
     '2-3': 'medium to high pollen concentration',
     '3': 'high pollen concentration'
   };
-  if (systemLanguage === 'DE') {
-    return indextext_de[index] || 'keine Daten vorhanden';
+  if (systemLanguage === 'DE') { 
+    text = indextext_de[index] || 'keine Daten vorhanden';
+    if(plant) {
+      text = text + ' für ' + plant;
+    }
   } else {
-    return indextext_en[index] || 'no data available';
+    text = indextext_en[index] || 'no data available';
+    if(plant) {
+      text = text + ' for ' + plant;
+    }
   }
+  return text;
 }
 
 function getRiskNumber(index) {
@@ -274,7 +282,7 @@ async function setStates(result) {
             let stateid = channelid + '.index_' + k;
             promise.push(await adapter.setStateAsync(stateid, { val: getRiskNumber(riskindex), ack: true }));
             stateid = channelid + '.text_' + k;
-            promise.push(await adapter.setStateAsync(stateid, { val: getRiskIndexText(riskindex), ack: true }));
+            promise.push(await adapter.setStateAsync(stateid, { val: getRiskIndexText(riskindex, j), ack: true }));
           }
         }
       }
