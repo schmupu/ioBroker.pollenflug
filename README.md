@@ -56,7 +56,7 @@ Provided German counties:
 
 ## Changelog
 
-### 0.1.3 (23.11.2018)
+### 0.1.4 (23.11.2018)
 * (Stübi) First Version of pollen index adapter
 
 

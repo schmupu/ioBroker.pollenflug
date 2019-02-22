@@ -309,21 +309,21 @@ async function polling(result) {
   if (!result) {
     result = await pollenflugRequest();
   }
-  let polltime = 5 * 60 * 1000; // 5 minutes
+  let polltime = 10 * 60 * 1000; //10 minutes
   if (result) {
     await setStates(result);
     let now = new Date();
     let next_update = getDate(result.next_update);
-    polltime = (next_update.getTime() - now.getTime()) + (10 * 1000);
+    polltime = (next_update.getTime() - now.getTime()) + (1 * 60 * 1000); // + Offset of 1 Minute
     if (polltime < 0 || polltime >= 2147483647) {
-      polltime = 5 * 60 * 1000; // 5 minutes
-      adapter.log.info('Next DWD pollen request starts in ' + polltime + ' seconds.');
+      polltime = 5 * 60 * 1000; // 10 minutes
+      adapter.log.info('Next DWD pollen request starts in ' + (polltime / (60 * 1000)) + ' minutes.');
     } else {
       adapter.log.info('Next DWD pollen request starts on ' + next_update.toString());
     }
   }
   setTimeout(async () => {
-    await polling(result);
+    await polling();
   }, polltime);
 }
 
