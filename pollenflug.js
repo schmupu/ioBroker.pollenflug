@@ -127,12 +127,15 @@ function getWeekday(datum) {
 }
 
 async function deleteObjects(result) {
+  let id;
+  let sid;
   try {
     if (result) {
       let content = getPollenflugForRegion(result, adapter.config.region) || [];
       let devices = await adapter.getDevicesAsync();
       for (let j in devices) {
-        let id = devices[j]._id.replace(adapter.namespace + '.', '');
+        id = devices[j]._id.replace(adapter.namespace + '.', '');
+        sid = devices[j]._id;
         let found = false;
         for (let i in content) {
           let entry = content[i];
@@ -144,12 +147,14 @@ async function deleteObjects(result) {
           }
         }
         if (found === false && id) {
-          await adapter.deleteDeviceAsync(id);
+          adapter.deleteDevice(id, ()=>{});
+          // await adapter.deleteDeviceAsync(id);
+          // await adapter.delObjectAsync(id);
         }
       }
     }
   } catch (error) {
-    adapter.log.error('Error deleting Objects' + error);
+    adapter.log.error('Error deleting Objects ' + id + ' / ' + error);
   }
 }
 
@@ -239,7 +244,7 @@ async function createObjects(result) {
       });
     }
   } catch (error) {
-    adapter.log.error('Error creating Objects');
+    adapter.log.error('Error creating Objects ' + error);
   }
 }
 
@@ -274,7 +279,7 @@ async function setStates(result) {
       await Promise.all(promise);
     }
   } catch (error) {
-    adapter.log.error('Error setting States');
+    adapter.log.error('Error setting States ' + error);
   }
 }
 
