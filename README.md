@@ -59,6 +59,18 @@ This format can more simply used in ioBroker.
 
 ![ioBroker2](docs/iobroker-pollenflug2.png)
 
+## Example
+If new data from DWD arrived (the today date will change), the script will show the 
+pollen risk index for Hasel and Erle. 
+
+```sh
+on({id: "pollenflug.0.info.today"/*Today*/, change: "ne"}, (obj) => {
+    let hasel = getState("pollenflug.0.region#12.Hasel.text_today"/*today*/).val;
+    let erle  = getState("pollenflug.0.region#12.Erle.text_today"/*today*/).val;
+    console.log("Haselnuss Belastung " + hasel);
+    console.log("Erle Belastung " + erle);
+});
+```
 
 ## Changelog
 
