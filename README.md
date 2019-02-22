@@ -18,42 +18,46 @@ Information on the pollen counties can be found at: https://www.dwd.de/pollenflu
 Requires node.js 8.0 or higher and Admin v3! Select the county in the ioBroker adapter
 configuration. You will get the pollen risk index for this county. The index will be updated 
 once the day, around 11 o'clock.
+In the objects info.today, info.tomorrow and info.dayaftertomorrow the validity period will be shown.
+It can possible that for example today is friday but in the object info.today the day ist thursday. 
+That is correct, because the DWD data are still from thursday and not updated till now. The update will be
+at 11 o'clock normaly.  
 
-Provides counties:
-* Schleswig-Holstein und Hamburg
-* Mecklenburg-Vorpommern
-* Niedersachsen und Bremen
-* Nordrhein-Westfalen
-* Brandenburg und Berlin
-* Sachsen-Anhalt
-* Thüringen
-* Sachsen
-* Hessen
-* Rheinland-Pfalz und Saarland
-* Baden-Württemberg
-* Bayern
+Provided German counties:
+* Schleswig-Holstein und Hamburg (region 11 and 12)
+* Mecklenburg-Vorpommern  (region 20)
+* Niedersachsen und Bremen  (region 31 and 32)
+* Nordrhein-Westfalen (region 41, 42 and 43)
+* Brandenburg und Berlin (region 50)
+* Sachsen-Anhalt  (region 61 and 62)
+* Thüringen (region 71 and 72)
+* Sachsen  (region 81 and 82)
+* Hessen  (region 91 and 92)
+* Rheinland-Pfalz und Saarland  (region 101, 102 and 103)
+* Baden-Württemberg  (region 111, 112 and 113)
+* Bayern (region 121, 122, 123 and 124)
 
 ![ioBroker1](docs/iobroker-pollenflug1.png)
 
 
-| Index | description                     	|
-|-----	|---------------------------------	|
-| -1   	| no data available                 |
-| 0   	| low pollen pollution            	|
-| 0.5 	| low to medium pollen pollution  	|
-| 1   	| low pollen pollution            	|
-| 1.5 	| low to medium pollen pollution  	|
-| 2   	| average pollen pollution        	|
-| 2.5 	| medium to high pollen pollution 	|
-| 3   	| high pollen pollution           	|
+| Index | description                       	|
+|-----	|------------------------------------ |
+| -1   	| no data available                   |
+| 0   	| low pollen concentration         	  |
+| 0.5 	| low to medium pollen concentration  |
+| 1   	| low pollen concentration        	  |
+| 1.5 	| low to medium pollen concentration	|
+| 2   	| average pollen concentration      	|
+| 2.5 	| medium to high pollen concentration |
+| 3   	| high pollen concentration          	|
 
 ![ioBroker2](docs/iobroker-pollenflug2.png)
 
 
 ## Changelog
 
-### 0.1.2 (23.11.2018)
-* (Stübi) First Version
+### 0.1.3 (23.11.2018)
+* (Stübi) First Version of pollen index adapter
 
 
 ## License

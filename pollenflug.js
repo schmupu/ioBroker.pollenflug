@@ -12,6 +12,7 @@ const adapterName = require('./package.json').name.split('.').pop();
 const adapterNodeVer = require('./package.json').engines.node;
 const semver = require('semver');
 
+let systemLanguage;
 let adapter;
 
 function startAdapter(options) {
@@ -49,6 +50,8 @@ function startAdapter(options) {
       adapter.log.error(`Required node version ${adapterNodeVer} not satisfied with current version ${process.version}.`);
       setTimeout(() => adapter.stop());
     }
+    let obj = await adapter.getForeignObjectAsync('system.config');
+    systemLanguage = (obj.common.language).toUpperCase();
     await main();
   });
   return adapter;
@@ -61,7 +64,7 @@ function datePlusdDays(date, number) {
 }
 
 function getRiskIndexText(index) {
-  let indextext = {
+  let indextext_de = {
     '0': 'keine Belastung',
     '0-1': 'keine bis geringe Belastung',
     '1': 'geringe Belastung',
@@ -70,7 +73,20 @@ function getRiskIndexText(index) {
     '2-3': 'mittlere bis hohe Belastung',
     '3': 'hohe Belastung'
   };
-  return indextext[index] || 'unbekannt';
+  let indextext_en = {
+    '0': 'not any pollen concentration',
+    '0-1': 'not any to low pollen concentration',
+    '1': 'low pollen concentration',
+    '1-2': 'low to medium pollen concentration',
+    '2': 'medium pollen concentration',
+    '2-3': 'medium to high pollen concentration',
+    '3': 'high pollen concentration'
+  };
+  if (systemLanguage === 'DE') {
+    return indextext_de[index] || 'keine Daten vorhanden';
+  } else {
+    return indextext_en[index] || 'no data available';
+  }
 }
 
 function getRiskNumber(index) {
@@ -98,7 +114,6 @@ function getRiskNumber(index) {
 function getDate(datum) {
   let mydate;
   if (datum) {
-    // let seps = [' ', '\\\.', '\\\+', '-', '\\\(', '\\\)', '\\*', '/', ':', '\\\?'];
     let seps = [' ', '\\.', '\\+', '-', '\\(', '\\)', '\\*', '/', ':', '\\?'];
     let fields = datum.split(new RegExp(seps.join('|'), 'g'));
     mydate = new Date(fields[0], fields[1] - 1, fields[2], fields[3], fields[4]);
@@ -171,7 +186,8 @@ async function createObjects(result) {
               type: 'state',
               common: {
                 name: k,
-                type: 'number'
+                type: 'number',
+                role: 'state',
               },
               native: {}
             }));
@@ -180,12 +196,11 @@ async function createObjects(result) {
               type: 'state',
               common: {
                 name: k,
-                type: 'number'
+                type: 'string',
+                role: 'state'
               },
               native: {}
             }));
-
-            // await adapter.setStateAsync(stateid, {val: riskindex, ack: true} );
           }
         }
       }
@@ -193,14 +208,15 @@ async function createObjects(result) {
       await adapter.setObjectNotExistsAsync('info', {
         type: 'device',
         common: {
-          name: 'Informationen'
+          name: 'Information'
         }
       });
       await adapter.setObjectNotExistsAsync('info.today', {
         type: 'state',
         common: {
           name: 'Today',
-          type: 'string'
+          type: 'string',
+          role: 'date'
         },
         native: {}
       });
@@ -208,15 +224,17 @@ async function createObjects(result) {
         type: 'state',
         common: {
           name: 'Tomorow',
-          type: 'string'
+          type: 'string',
+          role: 'date'
         },
         native: {}
       });
-      await adapter.setObjectNotExistsAsync('info.dayaftertoday', {
+      await adapter.setObjectNotExistsAsync('info.dayaftertomorrow', {
         type: 'state',
         common: {
-          name: 'Day after today',
-          type: 'string'
+          name: 'Day after tomorrow',
+          type: 'string',
+          role: 'date'
         },
         native: {}
       });
@@ -250,10 +268,10 @@ async function setStates(result) {
       }
       let today = getDate(result.last_update);
       let tomorrow = datePlusdDays(today, 1);
-      let dayaftertoday = datePlusdDays(today, 2);
-      promise.push(await adapter.setStateAsync('info.today', { val: today, ack: true }));
-      promise.push(await adapter.setStateAsync('info.tomorrow', { val: tomorrow, ack: true }));
-      promise.push(await adapter.setStateAsync('info.dayaftertoday', { val: dayaftertoday, ack: true }));
+      let dayaftertomorrow = datePlusdDays(today, 2);
+      promise.push(await adapter.setStateAsync('info.today', { val: today.toString(), ack: true }));
+      promise.push(await adapter.setStateAsync('info.tomorrow', { val: tomorrow.toString(), ack: true }));
+      promise.push(await adapter.setStateAsync('info.dayaftertomorrow', { val: dayaftertomorrow.toString(), ack: true }));
       await Promise.all(promise);
     }
   } catch (error) {
@@ -277,8 +295,9 @@ function getPollenflugForRegion(data, region) {
 
 async function pollenflugRequest() {
   let result;
-  let url = 'https://opendata.dwd.de/climate_environment/health/alerts/s31fg.json';
+  let url = adapter.config.url;
   try {
+    adapter.log.info('Requesting DWD pollen information now.');
     result = await request(url, { method: 'GET', json: true, timeout: 5000 });
   } catch (error) {
     adapter.log.error('Error requesting URL ' + url);
@@ -290,18 +309,20 @@ async function polling(result) {
   if (!result) {
     result = await pollenflugRequest();
   }
-  let polltime = 60 * 1000;
+  let polltime = 5 * 60 * 1000; // 5 minutes
   if (result) {
     await setStates(result);
     let now = new Date();
     let next_update = getDate(result.next_update);
-    polltime = (next_update.getTime() - now.getTime()) + 60;
+    polltime = (next_update.getTime() - now.getTime()) + (10 * 1000);
     if (polltime < 0 || polltime >= 2147483647) {
-      polltime = 60 * 1000;
+      polltime = 5 * 60 * 1000; // 5 minutes
+      adapter.log.info('Next DWD pollen request starts in ' + polltime + ' seconds.');
+    } else {
+      adapter.log.info('Next DWD pollen request starts on ' + next_update.toString());
     }
   }
   setTimeout(async () => {
-    adapter.log.info('Requesting DWD data');
     await polling(result);
   }, polltime);
 }
@@ -312,14 +333,14 @@ async function polling(result) {
 async function main() {
   let result = await pollenflugRequest();
   if (result) {
-    await deleteObjects(result);
-    await createObjects(result);
-    await polling(result);
+    await deleteObjects(result); // delete old objects
+    await createObjects(result); // create object. once at start of adapter
+    await polling(result); // periodical polling of states (once the day)
   } else {
-    adapter.log.error('Error reading pollen risk index');
+    adapter.log.error('Error reading pollen risk index.');
     setTimeout(async () => {
       await main();
-    }, 10 * 1000);
+    }, 1 * 60 * 1000); // try to get data in 1 Minute
   }
 }
 
