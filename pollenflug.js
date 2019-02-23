@@ -154,10 +154,11 @@ async function deleteObjects(result) {
           }
         }
         if (found === false && id) {
-          promise.push(await adapter.deleteDeviceAsync(id));
+          //promise.push(await adapter.deleteDeviceAsync(id));
+          adapter.deleteDevice(id, (error, data) => { });
         }
       }
-      await Promise.all(promise);
+      //await Promise.all(promise);
     }
   } catch (error) {
     adapter.log.error('Error deleting Objects ' + error);

@@ -1,9 +1,13 @@
 {
   "common": {
     "name": "pollenflug",
-    "version": "0.1.6",
+    "version": "0.1.7",
     "title": "Pollen flight risk index",
     "news": {
+      "0.1.7": {
+        "en": "Bugfixing",
+        "de": "Bugfixing"
+      },
       "0.1.6": {
         "en": "First version of pollen flight risk index",
         "de": "Erste Version vom Pollenflug Gefahrenindex"

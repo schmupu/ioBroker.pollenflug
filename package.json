@@ -1,6 +1,6 @@
 {
   "name": "iobroker.pollenflug",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Pollen flight risk index",
   "author": {
     "name": "Thorsten Stueben",

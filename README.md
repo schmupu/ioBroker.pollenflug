@@ -74,6 +74,9 @@ on({id: "pollenflug.0.info.today"/*Today*/, change: "ne"}, (obj) => {
 
 ## Changelog
 
+### 0.1.7 (24.11.2018)
+* (Stübi) Bugfixing deleting object
+
 ### 0.1.6 (23.11.2018)
 * (Stübi) First Version of pollen index adapter
 
