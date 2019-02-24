@@ -115,20 +115,22 @@ function getRiskNumber(index) {
   return number;
 }
 
-async function deleteObjectRecusiveAsync(deviceid) {
+async function deleteDeviceRecursiveAsync(deviceid) {
   try {
-    let channels = await adapter.getChannelsOfAsync(deviceid);
-    for (let i in channels) {
-      let channelid = channels[i]._id.replace(adapter.namespace + '.' + deviceid + '.', '');
-      let states = await adapter.getStatesOfAsync(deviceid, channelid);
-      for (let j in states) {
-        let stateid = states[j]._id.replace(adapter.namespace + '.' + deviceid + '.' + channelid + '.', '');
-        let id = deviceid + '.' + channelid + '.' + stateid;
-        await adapter.delObjectAsync(id);
+    if (deviceid) {
+      let channels = await adapter.getChannelsOfAsync(deviceid);
+      for (let i in channels) {
+        let channelid = channels[i]._id.split('.').pop();
+        let states = await adapter.getStatesOfAsync(deviceid, channelid);
+        for (let j in states) {
+          let stateid = states[j]._id.split('.').pop();
+          let id = deviceid + '.' + channelid + '.' + stateid;
+          await adapter.delObjectAsync(id);
+        }
+        await adapter.deleteChannelAsync(deviceid, channelid);
       }
-      await adapter.deleteChannelAsync(deviceid, channelid);
-    }
-    await adapter.deleteDeviceAsync(deviceid);
+      await adapter.deleteDeviceAsync(deviceid);
+    } 
   } catch (error) {
     adapter.log.error('Error deleting Device: ' + deviceid + ' / ' + error);
   }
@@ -156,12 +158,12 @@ function getWeekday(datum) {
 async function deleteObjects(result) {
   try {
     if (result) {
-      let id;
       let content = getPollenflugForRegion(result, adapter.config.region) || [];
       let devices = await adapter.getDevicesAsync();
       let promise = [];
       for (let j in devices) {
-        id = devices[j]._id.replace(adapter.namespace + '.', '');
+        // let id = devices[j]._id.replace(adapter.namespace + '.', '');
+        let id = devices[j]._id.split('.').pop();
         let found = false;
         for (let i in content) {
           let entry = content[i];
@@ -173,7 +175,8 @@ async function deleteObjects(result) {
           }
         }
         if (found === false && id) {
-          promise.push(await deleteObjectRecusiveAsync(id));
+          // await adapter.deleteDeviceAsync(id);
+          promise.push(await deleteDeviceRecursiveAsync(id));
         }
       }
       await Promise.all(promise);
