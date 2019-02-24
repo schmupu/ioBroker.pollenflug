@@ -115,6 +115,25 @@ function getRiskNumber(index) {
   return number;
 }
 
+async function deleteObjectRecusiveAsync(deviceid) {
+  try {
+    let channels = await adapter.getChannelsOfAsync(deviceid);
+    for (let i in channels) {
+      let channelid = channels[i]._id.replace(adapter.namespace + '.' + deviceid + '.', '');
+      let states = await adapter.getStatesOfAsync(deviceid, channelid);
+      for (let j in states) {
+        let stateid = states[j]._id.replace(adapter.namespace + '.' + deviceid + '.' + channelid + '.', '');
+        let id = deviceid + '.' + channelid + '.' + stateid;
+        await adapter.delObjectAsync(id);
+      }
+      await adapter.deleteChannelAsync(deviceid, channelid);
+    }
+    await adapter.deleteDeviceAsync(deviceid);
+  } catch (error) {
+    adapter.log.error('Error deleting Device: ' + deviceid + ' / ' + error);
+  }
+}
+
 // *****************************************************************************************************
 // 21.02.2019 11:00 Uhr -> Date Object
 // *****************************************************************************************************
@@ -137,10 +156,10 @@ function getWeekday(datum) {
 async function deleteObjects(result) {
   try {
     if (result) {
-      let promise = [];
       let id;
       let content = getPollenflugForRegion(result, adapter.config.region) || [];
       let devices = await adapter.getDevicesAsync();
+      let promise = [];
       for (let j in devices) {
         id = devices[j]._id.replace(adapter.namespace + '.', '');
         let found = false;
@@ -154,11 +173,10 @@ async function deleteObjects(result) {
           }
         }
         if (found === false && id) {
-          //promise.push(await adapter.deleteDeviceAsync(id));
-          adapter.deleteDevice(id, (error, data) => { });
+          promise.push(await deleteObjectRecusiveAsync(id));
         }
       }
-      //await Promise.all(promise);
+      await Promise.all(promise);
     }
   } catch (error) {
     adapter.log.error('Error deleting Objects ' + error);
