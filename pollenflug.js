@@ -62,6 +62,33 @@ function datePlusdDays(date, number) {
   return mydate;
 }
 
+function getImage(weekday, plant) {
+  let url = 'https://www.dwd.de/DWD/warnungen/medizin/pollen/';
+  if (weekday && plant) {
+    let plants = {
+      hasel: 0,
+      erle: 1,
+      birke: 2,
+      graeser: 3,
+      roggen: 4,
+      beifuss: 5,
+      ambrosia: 6,
+      esche: 7,
+    };
+    let weekdays = {
+      today: 1,
+      tomorrow: 2,
+      dayaftertomorrow: 3
+    };
+
+    let urlweekday = weekdays[weekday.toLowerCase()];
+    let urlplant = plants[plant.toLowerCase()];
+    return url + 'pollen_' + urlweekday + '_' + urlplant + '.png';
+  } else {
+    return '';
+  }
+}
+
 function getRiskIndexText(index, plant) {
   let text;
   let indextext_de = {
@@ -130,7 +157,7 @@ async function deleteDeviceRecursiveAsync(deviceid) {
         await adapter.deleteChannelAsync(deviceid, channelid);
       }
       await adapter.deleteDeviceAsync(deviceid);
-    } 
+    }
   } catch (error) {
     adapter.log.error('Error deleting Device: ' + deviceid + ' / ' + error);
   }
@@ -169,7 +196,7 @@ async function deleteObjects(result) {
           let entry = content[i];
           let partregion_id = entry.partregion_id != -1 ? entry.partregion_id : entry.region_id;
           let deviceid = 'region#' + partregion_id;
-          if (deviceid === id || id === 'info') {
+          if (deviceid === id || id === 'info' || id === 'images') {
             found = true;
             break;
           }
@@ -185,6 +212,122 @@ async function deleteObjects(result) {
     adapter.log.error('Error deleting Objects ' + error);
   }
 }
+
+async function createInfoObjects() {
+  try {
+    let promise = [];
+    await adapter.setObjectNotExistsAsync('info', {
+      type: 'device',
+      common: {
+        name: 'Information'
+      }
+    });
+    promise.push(await adapter.setObjectNotExistsAsync('info.today', {
+      type: 'state',
+      common: {
+        name: 'Today',
+        type: 'string',
+        role: 'date',
+        read: true,
+        write: false
+      },
+      native: {}
+    }));
+    promise.push(await adapter.setObjectNotExistsAsync('info.tomorrow', {
+      type: 'state',
+      common: {
+        name: 'Tomorow',
+        type: 'string',
+        role: 'date',
+        read: true,
+        write: false
+      },
+      native: {}
+    }));
+    promise.push(await adapter.setObjectNotExistsAsync('info.dayaftertomorrow', {
+      type: 'state',
+      common: {
+        name: 'Day after tomorrow',
+        type: 'string',
+        role: 'date',
+        read: true,
+        write: false
+      },
+      native: {}
+    }));
+    await Promise.all(promise);
+  } catch (error) {
+    adapter.log.error('Error creating Info Objects ' + error);
+  }
+}
+
+
+async function createImageObjects(result) {
+  try {
+    if (result) {
+      let content = getPollenflugForRegion(result, adapter.config.region) || [];
+      let promise = [];
+      let deviceid = adapter.namespace + '.images';
+      await adapter.setObjectNotExistsAsync(deviceid, {
+        type: 'device',
+        common: {
+          name: 'Images'
+        }
+      });
+      for (let i in content) {
+        let entry = content[i];
+        for (let j in entry.Pollen) {
+          let pollen = entry.Pollen[j];
+          let channelid = deviceid + '.' + j;
+          await adapter.setObjectNotExistsAsync(channelid, {
+            type: 'channel',
+            common: {
+              name: 'Images for ' + j
+            }
+          });
+          promise.push(await adapter.setObjectNotExistsAsync(channelid + '.image_today', {
+            type: 'state',
+            common: {
+              name: 'Today',
+              type: 'string',
+              role: 'weather.chart.url',
+              read: true,
+              write: false
+            },
+            native: {}
+          }));
+          promise.push(await adapter.setObjectNotExistsAsync(channelid + '.image_tomorrow', {
+            type: 'state',
+            common: {
+              name: 'Tomorow',
+              type: 'string',
+              role: 'weather.chart.url',
+              read: true,
+              write: false
+            },
+            native: {}
+          }));
+          promise.push(await adapter.setObjectNotExistsAsync(channelid + '.image_dayaftertomorrow', {
+            type: 'state',
+            common: {
+              name: 'Day after tomorrow',
+              type: 'string',
+              role: 'weather.chart.url',
+              read: true,
+              write: false
+            },
+            native: {}
+          }));
+        }
+        break; // only one call
+      }
+      await Promise.all(promise);
+    }
+  } catch (error) {
+    adapter.log.error('Error creating Objects ' + error);
+  }
+}
+
 
 async function createObjects(result) {
   try {
@@ -240,46 +383,6 @@ async function createObjects(result) {
           }
         }
       }
-
-      await adapter.setObjectNotExistsAsync('info', {
-        type: 'device',
-        common: {
-          name: 'Information'
-        }
-      });
-      promise.push(await adapter.setObjectNotExistsAsync('info.today', {
-        type: 'state',
-        common: {
-          name: 'Today',
-          type: 'string',
-          role: 'date',
-          read: true,
-          write: false
-        },
-        native: {}
-      }));
-      promise.push(await adapter.setObjectNotExistsAsync('info.tomorrow', {
-        type: 'state',
-        common: {
-          name: 'Tomorow',
-          type: 'string',
-          role: 'date',
-          read: true,
-          write: false
-        },
-        native: {}
-      }));
-      promise.push(await adapter.setObjectNotExistsAsync('info.dayaftertomorrow', {
-        type: 'state',
-        common: {
-          name: 'Day after tomorrow',
-          type: 'string',
-          role: 'date',
-          read: true,
-          write: false
-        },
-        native: {}
-      }));
       await Promise.all(promise);
     }
   } catch (error) {
@@ -293,6 +396,7 @@ async function setStates(result) {
     if (result) {
       let content = getPollenflugForRegion(result, adapter.config.region) || [];
       let promise = [];
+      let image = false;
       for (let i in content) {
         let entry = content[i];
         let partregion_id = entry.partregion_id != -1 ? entry.partregion_id : entry.region_id;
@@ -307,7 +411,14 @@ async function setStates(result) {
             stateid = channelid + '.text_' + k;
             promise.push(await adapter.setStateAsync(stateid, { val: getRiskIndexText(riskindex, j), ack: true }));
           }
+          if (image === false) {
+            let imageid = adapter.namespace + '.images.' + j;
+            promise.push(await adapter.setStateAsync(imageid + '.image_today', { val: getImage('today', j), ack: true }));
+            promise.push(await adapter.setStateAsync(imageid + '.image_tomorrow', { val: getImage('tomorrow', j), ack: true }));
+            promise.push(await adapter.setStateAsync(imageid + '.image_dayaftertomorrow', { val: getImage('dayaftertomorrow', j), ack: true }));
+          }
         }
+        image = true;
       }
       let today = getDate(result.last_update);
       let tomorrow = datePlusdDays(today, 1);
@@ -377,7 +488,9 @@ async function main() {
   let result = await pollenflugRequest();
   if (result) {
     await deleteObjects(result); // delete old objects
+    await createInfoObjects();
     await createObjects(result); // create object. once at start of adapter
+    await createImageObjects(result);
     await polling(result); // periodical polling of states (once the day)
   } else {
     adapter.log.error('Error reading pollen risk index.');

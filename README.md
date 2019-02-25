@@ -59,6 +59,15 @@ This format can more simply used in ioBroker.
 
 ![ioBroker2](docs/iobroker-pollenflug2.png)
 
+
+URL addess of the pollen images from DWD
+![ioBroker3](docs/iobroker-pollenflug3.png)
+
+
+For Example, pollen flight today for Hasel
+![ioBroker4](https://www.dwd.de/DWD/warnungen/medizin/pollen/pollen_1_0.png)
+
+
 ## Example
 If new data from DWD arrived (the today date will change), the script will show the 
 pollen risk index for Hasel and Erle. 
@@ -73,11 +82,13 @@ on({id: "pollenflug.0.info.today"/*Today*/, change: "ne"}, (obj) => {
 ```
 
 ## Changelog
+### 0.1.9 (25.02.2019)
+* (Stübi) Link to DWD Image of pollen flight added
 
-### 0.1.8 (24.11.2018)
+### 0.1.8 (24.02.2019)
 * (Stübi) Bugfixing deleting object
 
-### 0.1.6 (23.11.2018)
+### 0.1.6 (20.02.2019)
 * (Stübi) First Version of pollen index adapter
 
 

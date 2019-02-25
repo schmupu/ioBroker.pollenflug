@@ -1,9 +1,21 @@
 {
   "common": {
     "name": "pollenflug",
-    "version": "0.1.8",
+    "version": "0.1.9",
     "title": "Pollen flight risk index",
     "news": {
+      "0.1.9": {
+        "en": "Images of pollen added",
+        "de": "Bilder von Pollen hinzugefügt",
+        "ru": "Добавлены изображения пыльцы",
+        "pt": "Imagens de pólen adicionadas",
+        "nl": "Beelden van stuifmeel toegevoegd",
+        "fr": "Images de pollen ajoutées",
+        "it": "Immagini di polline aggiunte",
+        "es": "Imágenes de polen añadidas.",
+        "pl": "Dodano obrazy pyłków",
+        "zh-cn": "花粉的图像添加"
+      },
       "0.1.8": {
         "en": "Bugfixing",
         "de": "Bugfixing",
