@@ -6,20 +6,52 @@
     "news": {
       "0.1.7": {
         "en": "Bugfixing",
-        "de": "Bugfixing"
+        "de": "Bugfixing",
+        "ru": "Исправление ошибок",
+        "pt": "Corrigindo erro",
+        "nl": "Bug Fixing",
+        "fr": "Correction de bugs",
+        "it": "Correzione di bug",
+        "es": "Corrección de errores",
+        "pl": "Naprawa błędów",
+        "zh-cn": "错误修复"
       },
       "0.1.6": {
         "en": "First version of pollen flight risk index",
-        "de": "Erste Version vom Pollenflug Gefahrenindex"
+        "de": "Erste Version vom Pollenflug Gefahrenindex",
+        "ru": "Первая версия индекса летного риска пыльцы",
+        "pt": "Primeira versão do índice de risco de vôo do pólen",
+        "nl": "Eerste versie van de pollenvluchtrisico-index",
+        "fr": "Première version de l'indice de risque de vol de pollen",
+        "it": "Prima versione dell'indice di rischio di volo dei pollini",
+        "es": "Primera versión del índice de riesgo de fuga de polen.",
+        "pl": "Pierwsza wersja wskaźnika ryzyka lotu pyłkowego",
+        "zh-cn": "第一版花粉飞行风险指数"
       }
     },
     "titleLang": {
       "en": "Pollen flight risk index",
-      "de": "Pollenflug Gefahrenindex"
+      "de": "Pollenflug Gefahrenindex in Deutschland",
+      "ru": "Индекс риска перелета пыльцы »",
+      "pt": "Índice de risco de vôo de pólen",
+      "nl": "Stuifmeelvluchtrisico-index",
+      "fr": "Indice de risque de vol de pollen",
+      "it": "Indice di rischio di volo pollinico",
+      "es": "Índice de riesgo de fuga de polen",
+      "pl": "Wskaźnik ryzyka lotu pyłkowego",
+      "zh-cn": "花粉飞行风险指数"
     },
     "desc": {
       "en": "Pollen flight risk index",
-      "de": "Pollenflug Gefahrenindex in Deutschland"
+      "de": "Pollenflug Gefahrenindex in Deutschland",
+      "ru": "Индекс риска перелета пыльцы »",
+      "pt": "Índice de risco de vôo de pólen",
+      "nl": "Stuifmeelvluchtrisico-index",
+      "fr": "Indice de risque de vol de pollen",
+      "it": "Indice di rischio di volo pollinico",
+      "es": "Índice de riesgo de fuga de polen",
+      "pl": "Wskaźnik ryzyka lotu pyłkowego",
+      "zh-cn": "花粉飞行风险指数"
     },
     "license": "MIT",
     "authors": [
