@@ -3,7 +3,7 @@
 # Pollen risk index
 [![Travis CI Build Status](https://travis-ci.org/schmupu/ioBroker.pollenflug.svg?branch=master)](https://travis-ci.org/schmupu/ioBroker.pollenflug)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/schmupu/ioBroker.pollenflug?branch=master&svg=true)](https://ci.appveyor.com/project/schmupu/ioBroker-pollenflug/)
-[![NPM version](http://img.shields.io/npm/v/iobroker.pollenflug.svg)](https://www.npmjs.com/package/iobroker.pollenflug)
+![Number of Installations](http://iobroker.live/badges/pollenflug-installed.svg) ![Number of Installations](http://iobroker.live/badges/pollenflug-stable.svg) [![NPM version](http://img.shields.io/npm/v/iobroker.pollenflug.svg)](https://www.npmjs.com/package/iobroker.pollenflug)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.pollenflug.svg)](https://www.npmjs.com/package/iobroker.pollenflug)
 
 [![NPM](https://nodei.co/npm/iobroker.pollenflug.png?downloads=true)](https://nodei.co/npm/iobroker.pollenflug/)
