@@ -363,78 +363,74 @@ async function createObjects(result) {
             name: partregion_name
           }
         });
-        let stateid = deviceid + '.json_index_today';
-        promise.push(await adapter.setObjectNotExistsAsync(stateid, {
-          type: 'state',
+        let channelid = deviceid + '.summary';
+        await adapter.setObjectNotExistsAsync(channelid, {
+          type: 'channel',
           common: {
-            name: 'Summary today (index)',
-            type: 'string',
-            role: 'state',
-            read: true,
-            write: false
-          },
-          native: {}
-        }));
-        stateid = deviceid + '.json_index_tomorrow';
-        promise.push(await adapter.setObjectNotExistsAsync(stateid, {
-          type: 'state',
-          common: {
-            name: 'Summary tomorrow (index)',
-            type: 'string',
-            role: 'state',
-            read: true,
-            write: false
-          },
-          native: {}
-        }));
-        stateid = deviceid + '.json_index_dayafter_to';
-        promise.push(await adapter.setObjectNotExistsAsync(stateid, {
-          type: 'state',
-          common: {
-            name: 'Summary day after tomorrow (index)',
-            type: 'string',
-            role: 'state',
-            read: true,
-            write: false
-          },
-          native: {}
-        }));
-        stateid = deviceid + '.json_text_today';
-        promise.push(await adapter.setObjectNotExistsAsync(stateid, {
-          type: 'state',
-          common: {
-            name: 'Summary today (text)',
-            type: 'string',
-            role: 'state',
-            read: true,
-            write: false
-          },
-          native: {}
-        }));
-        stateid = deviceid + '.json_text_tomorrow';
-        promise.push(await adapter.setObjectNotExistsAsync(stateid, {
-          type: 'state',
-          common: {
-            name: 'Summary tomorrow (text)',
-            type: 'string',
-            role: 'state',
-            read: true,
-            write: false
-          },
-          native: {}
-        }));
-        stateid = deviceid + '.json_text_dayafter_to';
-        promise.push(await adapter.setObjectNotExistsAsync(stateid, {
-          type: 'state',
-          common: {
-            name: 'Summary day after tomorrow (text)',
-            type: 'string',
-            role: 'state',
-            read: true,
-            write: false
-          },
-          native: {}
-        }));
+            name: 'summary'
+          }
+        });
+        let days = ['today', 'tomorrow', 'dayafter_to'];
+        for (let m in days) {
+          let day = days[m];
+          let stateid = deviceid + '.summary.json_index_' + day;
+          promise.push(await adapter.setObjectNotExistsAsync(stateid, {
+            type: 'state',
+            common: {
+              name: 'Summary ' + day + ' (index)',
+              type: 'string',
+              role: 'state',
+              read: true,
+              write: false
+            },
+            native: {}
+          }));
+          stateid = deviceid + '.summary.json_text_' + day;
+          promise.push(await adapter.setObjectNotExistsAsync(stateid, {
+            type: 'state',
+            common: {
+              name: 'Summary ' + day + ' (text)',
+              type: 'string',
+              role: 'state',
+              read: true,
+              write: false
+            },
+            native: {}
+          }));
+          stateid = deviceid + '.summary.json_riskindex_' + day;
+          promise.push(await adapter.setObjectNotExistsAsync(stateid, {
+            type: 'state',
+            common: {
+              name: 'Summary ' + day + ' (riskindex)',
+              type: 'string',
+              role: 'state',
+              read: true,
+              write: false
+            },
+            native: {}
+          }));
+          let channelid = deviceid + '.riskindex_' + days[m];
+          await adapter.setObjectNotExistsAsync(channelid, {
+            type: 'channel',
+            common: {
+              name: 'riskindex'
+            }
+          });
+          for (let l = 0; l <= 6; l++) {
+            let stateid = channelid + '.riskindex_' + l;
+            promise.push(await adapter.setObjectNotExistsAsync(stateid, {
+              type: 'state',
+              common: {
+                name: 'Riskindex ' + l,
+                type: 'number',
+                role: 'state',
+                read: true,
+                write: false
+              },
+              native: {}
+            }));
+          }
+        }
         for (let j in entry.Pollen) {
           let pollen = entry.Pollen[j];
           let channelid = deviceid + '.' + j;
@@ -493,6 +489,8 @@ async function setStates(result) {
         let deviceid = adapter.namespace + '.region#' + partregion_id;
         let json_index = {};
         let json_text = {};
+        let json_riskindex = {};
+        let index = {};
         for (let j in entry.Pollen) {
           let channelid = deviceid + '.' + j;
           let pollen = entry.Pollen[j];
@@ -501,6 +499,12 @@ async function setStates(result) {
             let stateid = channelid + '.index_' + k;
             if (!json_index[k]) { json_index[k] = {}; }
             if (!json_text[k]) { json_text[k] = {}; }
+            if (!index[k]) { index[k] = {}; }
+            if (!index[k][getRiskNumber(riskindex)]) {
+              index[k][getRiskNumber(riskindex)] = [j];
+            } else {
+              index[k][getRiskNumber(riskindex)].push(j);
+            }
             json_index[k][j] = getRiskNumber(riskindex);
             json_text[k][j] = getRiskIndexText(riskindex, j);
             promise.push(await adapter.setStateAsync(stateid, { val: getRiskNumber(riskindex), ack: true }));
@@ -516,18 +520,21 @@ async function setStates(result) {
         }
         image = true;
 
-        let stateid = deviceid + '.json_index_today';
-        promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(json_index.today || {}), ack: true }));
-        stateid = deviceid + '.json_index_tomorrow';
-        promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(json_index.tomorrow || {}), ack: true }));
-        stateid = deviceid + '.json_index_dayafter_to';
-        promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(json_index.dayafter_to || {}), ack: true }));
-        stateid = deviceid + '.json_text_today';
-        promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(json_text.today || {}), ack: true }));
-        stateid = deviceid + '.json_text_tomorrow';
-        promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(json_text.tomorrow || {}), ack: true }));
-        stateid = deviceid + '.json_text_dayafter_to';
-        promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(json_text.dayafter_to || {}), ack: true }));
+        let days = ['today', 'tomorrow', 'dayafter_to'];
+        for (let m in days) {
+          let day = days[m];
+          let stateid = deviceid + '.summary.json_index_' + day;
+          promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(json_index[day] || {}), ack: true }));
+          stateid = deviceid + '.summary.json_text_' + day;
+          promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(json_text[day] || {}),ack: true }));
+          stateid = deviceid + '.summary.json_riskindex_' + day;
+          promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(index[day] || {}),ack: true }));
+          for (let l = 0; l <= 6; l++) {
+            let value = index && index[day] && index[day][l] ? index[day][l].toString() : '';
+            let stateid = deviceid + '.riskindex_' + day + '.riskindex_' + l;
+            promise.push(await adapter.setStateAsync(stateid, { val: value, ack: true }));
+          }
+        }
       }
 
       let today = getDate(result.last_update);
