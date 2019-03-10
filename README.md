@@ -43,19 +43,19 @@ Provided German counties:
 
 ![ioBroker1](docs/iobroker-pollenflug1.png)
 
-The original DWD risk index 0-1, 1-2 and 2-3 are changed to 0.5, 1.5 and 2.5. 
+The original DWD risk index 0, 0-1, 1, 1-2, 2, 2-3 and 3 are changed to 0, 1, 2, 3, 4, 5 and 6. 
 This format can more simply used in ioBroker.  
 
-| Index | description                      	  |
-|-----	|------------------------------------ |
-| -1   	| no data available                   |
-| 0   	| none pollen concentration           |
-| 1 	| none to low pollen concentration    |
-| 2   	| low pollen concentration        	  |
-| 3 	| low to medium pollen concentration  |
-| 4   	| average pollen concentration        |
-| 5 	| medium to high pollen concentration |
-| 6   	| high pollen concentration           |
+| Index | DWD Index | description                      	  |
+|-----	|---------- |------------------------------------ |
+| -1   	| -1        | no data available                   |
+| 0   	| 0         | none pollen concentration           | 
+| 1 	| 0-1       | none to low pollen concentration    | 
+| 2   	| 1         | low pollen concentration        	  | 
+| 3 	| 1-2       | low to medium pollen concentration  | 
+| 4   	| 2         | average pollen concentration        | 
+| 5 	| 2-3       | medium to high pollen concentration | 
+| 6   	| 3         | high pollen concentration           |
 
 ![ioBroker2](docs/iobroker-pollenflug2.png)
 
