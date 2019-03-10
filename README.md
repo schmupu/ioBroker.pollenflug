@@ -46,16 +46,16 @@ Provided German counties:
 The original DWD risk index 0-1, 1-2 and 2-3 are changed to 0.5, 1.5 and 2.5. 
 This format can more simply used in ioBroker.  
 
-| Index | description                       	|
+| Index | description                      	  |
 |-----	|------------------------------------ |
 | -1   	| no data available                   |
-| 0   	| none pollen concentration         	|
-| 0.5 	| none to low pollen concentration    |
-| 1   	| low pollen concentration        	  |
-| 1.5 	| low to medium pollen concentration	|
-| 2   	| average pollen concentration      	|
-| 2.5 	| medium to high pollen concentration |
-| 3   	| high pollen concentration          	|
+| 0   	| none pollen concentration           |
+| 1 	| none to low pollen concentration    |
+| 2   	| low pollen concentration        	  |
+| 3 	| low to medium pollen concentration  |
+| 4   	| average pollen concentration        |
+| 5 	| medium to high pollen concentration |
+| 6   	| high pollen concentration           |
 
 ![ioBroker2](docs/iobroker-pollenflug2.png)
 
@@ -83,6 +83,11 @@ on({id: "pollenflug.0.info.today"/*Today*/, change: "ne"}, (obj) => {
 ```
 
 ## Changelog
+
+### 1.0.0 (10.0.2019)
+* (Stübi) Changed the pollen index for better use in VIS. Now you you values -1, 0, 1, 2, 3, 4, 5 ,6
+* (Stübi) Add summary for today, tomorrow and the day after tomorrow in json format for every region
+
 ### 0.1.9 (25.02.2019)
 * (Stübi) Link to DWD Image of pollen flight added
 

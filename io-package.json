@@ -1,97 +1,109 @@
 {
-  "common": {
-    "name": "pollenflug",
-    "version": "0.1.9",
-    "title": "Pollen flight risk index",
-    "news": {
-      "0.1.9": {
-        "en": "Images of pollen added",
-        "de": "Bilder von Pollen hinzugefügt",
-        "ru": "Добавлены изображения пыльцы",
-        "pt": "Imagens de pólen adicionadas",
-        "nl": "Beelden van stuifmeel toegevoegd",
-        "fr": "Images de pollen ajoutées",
-        "it": "Immagini di polline aggiunte",
-        "es": "Imágenes de polen añadidas.",
-        "pl": "Dodano obrazy pyłków",
-        "zh-cn": "花粉的图像添加"
-      },
-      "0.1.8": {
-        "en": "Bugfixing",
-        "de": "Bugfixing",
-        "ru": "Исправление ошибок",
-        "pt": "Corrigindo erro",
-        "nl": "Bug Fixing",
-        "fr": "Correction de bugs",
-        "it": "Correzione di bug",
-        "es": "Corrección de errores",
-        "pl": "Naprawa błędów",
-        "zh-cn": "错误修复"
-      },
-      "0.1.6": {
-        "en": "First version of pollen flight risk index",
-        "de": "Erste Version vom Pollenflug Gefahrenindex",
-        "ru": "Первая версия индекса летного риска пыльцы",
-        "pt": "Primeira versão do índice de risco de vôo do pólen",
-        "nl": "Eerste versie van de pollenvluchtrisico-index",
-        "fr": "Première version de l'indice de risque de vol de pollen",
-        "it": "Prima versione dell'indice di rischio di volo dei pollini",
-        "es": "Primera versión del índice de riesgo de fuga de polen.",
-        "pl": "Pierwsza wersja wskaźnika ryzyka lotu pyłkowego",
-        "zh-cn": "第一版花粉飞行风险指数"
-      }
+    "common": {
+        "name": "pollenflug",
+        "version": "1.0.0",
+        "title": "Pollen flight risk index",
+        "news": {
+            "1.0.0": {
+                "en": "Changed the pollen index for better use in VIS. Now you you values -1, 0, 1, 2, 3, 4, 5 ,6",
+                "de": "Der Pollenindex wurde für eine bessere Verwendung in VIS geändert. ",
+                "ru": "Изменен индекс пыльцы для лучшего использования в VIS. ",
+                "pt": "Mudou o índice de pólen para melhor uso no VIS. ",
+                "nl": "De stuifmeelindex veranderd voor een beter gebruik in het VIS. ",
+                "fr": "Modification de l'indice de pollen pour une meilleure utilisation dans le VIS. ",
+                "it": "Modificato l'indice dei pollini per un utilizzo migliore in VIS. ",
+                "es": "Se modificó el índice de polen para un mejor uso en VIS. ",
+                "pl": "Zmieniono indeks pyłkowy, aby lepiej wykorzystać go w VIS. ",
+                "zh-cn": "更改了花粉指数，以便在VIS中更好地使用。"
+            },
+            "0.1.9": {
+                "en": "Images of pollen added",
+                "de": "Bilder von Pollen hinzugefügt",
+                "ru": "Добавлены изображения пыльцы",
+                "pt": "Imagens de pólen adicionadas",
+                "nl": "Beelden van stuifmeel toegevoegd",
+                "fr": "Images de pollen ajoutées",
+                "it": "Immagini di polline aggiunte",
+                "es": "Imágenes de polen añadidas.",
+                "pl": "Dodano obrazy pyłków",
+                "zh-cn": "花粉的图像添加"
+            },
+            "0.1.8": {
+                "en": "Bugfixing",
+                "de": "Bugfixing",
+                "ru": "Исправление ошибок",
+                "pt": "Corrigindo erro",
+                "nl": "Bug Fixing",
+                "fr": "Correction de bugs",
+                "it": "Correzione di bug",
+                "es": "Corrección de errores",
+                "pl": "Naprawa błędów",
+                "zh-cn": "错误修复"
+            },
+            "0.1.6": {
+                "en": "First version of pollen flight risk index",
+                "de": "Erste Version vom Pollenflug Gefahrenindex",
+                "ru": "Первая версия индекса летного риска пыльцы",
+                "pt": "Primeira versão do índice de risco de vôo do pólen",
+                "nl": "Eerste versie van de pollenvluchtrisico-index",
+                "fr": "Première version de l'indice de risque de vol de pollen",
+                "it": "Prima versione dell'indice di rischio di volo dei pollini",
+                "es": "Primera versión del índice de riesgo de fuga de polen.",
+                "pl": "Pierwsza wersja wskaźnika ryzyka lotu pyłkowego",
+                "zh-cn": "第一版花粉飞行风险指数"
+            }
+        },
+        "titleLang": {
+            "en": "Pollen flight risk index",
+            "de": "Pollenflug Gefahrenindex in Deutschland",
+            "ru": "Индекс риска перелета пыльцы »",
+            "pt": "Índice de risco de vôo de pólen",
+            "nl": "Stuifmeelvluchtrisico-index",
+            "fr": "Indice de risque de vol de pollen",
+            "it": "Indice di rischio di volo pollinico",
+            "es": "Índice de riesgo de fuga de polen",
+            "pl": "Wskaźnik ryzyka lotu pyłkowego",
+            "zh-cn": "花粉飞行风险指数"
+        },
+        "desc": {
+            "en": "Pollen flight risk index",
+            "de": "Pollenflug Gefahrenindex in Deutschland",
+            "ru": "Индекс риска перелета пыльцы »",
+            "pt": "Índice de risco de vôo de pólen",
+            "nl": "Stuifmeelvluchtrisico-index",
+            "fr": "Indice de risque de vol de pollen",
+            "it": "Indice di rischio di volo pollinico",
+            "es": "Índice de riesgo de fuga de polen",
+            "pl": "Wskaźnik ryzyka lotu pyłkowego",
+            "zh-cn": "花粉飞行风险指数"
+        },
+        "license": "MIT",
+        "authors": [
+            "Thorsten Stueben <thorsten@stueben.de>"
+        ],
+        "platform": "Javascript/Node.js",
+        "mode": "daemon",
+        "messagebox": true,
+        "stopBeforeUpdate": true,
+        "subscribe": "messagebox",
+        "icon": "pollenflug.png",
+        "materialize": true,
+        "enabled": true,
+        "compact": true,
+        "extIcon": "https://raw.githubusercontent.com/schmupu/ioBroker.pollenflug/master/admin/pollenflug.png",
+        "keywords": [
+            "pollenflug"
+        ],
+        "readme": "https://github.com/schmupu/ioBroker.pollenflug/blob/master/README.md",
+        "loglevel": "info",
+        "type": "weather",
+        "restartAdapters": []
     },
-    "titleLang": {
-      "en": "Pollen flight risk index",
-      "de": "Pollenflug Gefahrenindex in Deutschland",
-      "ru": "Индекс риска перелета пыльцы »",
-      "pt": "Índice de risco de vôo de pólen",
-      "nl": "Stuifmeelvluchtrisico-index",
-      "fr": "Indice de risque de vol de pollen",
-      "it": "Indice di rischio di volo pollinico",
-      "es": "Índice de riesgo de fuga de polen",
-      "pl": "Wskaźnik ryzyka lotu pyłkowego",
-      "zh-cn": "花粉飞行风险指数"
+    "native": {
+        "pollInterval": "5",
+        "region": "*",
+        "url": "https://opendata.dwd.de/climate_environment/health/alerts/s31fg.json"
     },
-    "desc": {
-      "en": "Pollen flight risk index",
-      "de": "Pollenflug Gefahrenindex in Deutschland",
-      "ru": "Индекс риска перелета пыльцы »",
-      "pt": "Índice de risco de vôo de pólen",
-      "nl": "Stuifmeelvluchtrisico-index",
-      "fr": "Indice de risque de vol de pollen",
-      "it": "Indice di rischio di volo pollinico",
-      "es": "Índice de riesgo de fuga de polen",
-      "pl": "Wskaźnik ryzyka lotu pyłkowego",
-      "zh-cn": "花粉飞行风险指数"
-    },
-    "license": "MIT",
-    "authors": [
-      "Thorsten Stueben <thorsten@stueben.de>"
-    ],
-    "platform": "Javascript/Node.js",
-    "mode": "daemon",
-    "messagebox": true,
-    "stopBeforeUpdate": true,
-    "subscribe": "messagebox",
-    "icon": "pollenflug.png",
-    "materialize": true,
-    "enabled": true,
-    "compact": true,
-    "extIcon": "https://raw.githubusercontent.com/schmupu/ioBroker.pollenflug/master/admin/pollenflug.png",
-    "keywords": [
-      "pollenflug"
-    ],
-    "readme": "https://github.com/schmupu/ioBroker.pollenflug/blob/master/README.md",
-    "loglevel": "info",
-    "type": "weather",
-    "restartAdapters": []
-  },
-  "native": {
-    "pollInterval": "5",
-    "region": "*",
-    "url": "https://opendata.dwd.de/climate_environment/health/alerts/s31fg.json"
-  },
-  "objects": [],
-  "instanceObjects": []
+    "objects": [],
+    "instanceObjects": []
 }

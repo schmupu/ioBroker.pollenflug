@@ -126,17 +126,29 @@ function getRiskIndexText(index, plant) {
 function getRiskNumber(index) {
   let number;
   switch (index) {
+    case '0':
+      number = 0;
+      break;
     case '0-1':
-      number = 0.5;
+      number = 1;
+      break;
+    case '1':
+      number = 2;
       break;
     case '1-2':
-      number = 1.5;
+      number = 3;
+      break;
+    case '2':
+      number = 4;
       break;
     case '2-3':
-      number = 2.5;
+      number = 5;
+      break;
+    case '3':
+      number = 6;
       break;
     default:
-      number = 1.0 * index;
+      number = -1;
       break;
   }
   return number;
@@ -155,6 +167,12 @@ async function deleteDeviceRecursiveAsync(deviceid) {
           await adapter.delObjectAsync(id);
         }
         await adapter.deleteChannelAsync(deviceid, channelid);
+      }
+      let states = await adapter.getStatesOfAsync(deviceid, deviceid);
+      for (let j in states) {
+        let stateid = states[j]._id.split('.').pop();
+        let id = deviceid + '.' + stateid;
+        await adapter.delObjectAsync(id);
       }
       await adapter.deleteDeviceAsync(deviceid);
     }
@@ -345,6 +363,78 @@ async function createObjects(result) {
             name: partregion_name
           }
         });
+        let stateid = deviceid + '.json_index_today';
+        promise.push(await adapter.setObjectNotExistsAsync(stateid, {
+          type: 'state',
+          common: {
+            name: 'Summary today (index)',
+            type: 'string',
+            role: 'state',
+            read: true,
+            write: false
+          },
+          native: {}
+        }));
+        stateid = deviceid + '.json_index_tomorrow';
+        promise.push(await adapter.setObjectNotExistsAsync(stateid, {
+          type: 'state',
+          common: {
+            name: 'Summary tomorrow (index)',
+            type: 'string',
+            role: 'state',
+            read: true,
+            write: false
+          },
+          native: {}
+        }));
+        stateid = deviceid + '.json_index_dayafter_to';
+        promise.push(await adapter.setObjectNotExistsAsync(stateid, {
+          type: 'state',
+          common: {
+            name: 'Summary day after tomorrow (index)',
+            type: 'string',
+            role: 'state',
+            read: true,
+            write: false
+          },
+          native: {}
+        }));
+        stateid = deviceid + '.json_text_today';
+        promise.push(await adapter.setObjectNotExistsAsync(stateid, {
+          type: 'state',
+          common: {
+            name: 'Summary today (text)',
+            type: 'string',
+            role: 'state',
+            read: true,
+            write: false
+          },
+          native: {}
+        }));
+        stateid = deviceid + '.json_text_tomorrow';
+        promise.push(await adapter.setObjectNotExistsAsync(stateid, {
+          type: 'state',
+          common: {
+            name: 'Summary tomorrow (text)',
+            type: 'string',
+            role: 'state',
+            read: true,
+            write: false
+          },
+          native: {}
+        }));
+        stateid = deviceid + '.json_text_dayafter_to';
+        promise.push(await adapter.setObjectNotExistsAsync(stateid, {
+          type: 'state',
+          common: {
+            name: 'Summary day after tomorrow (text)',
+            type: 'string',
+            role: 'state',
+            read: true,
+            write: false
+          },
+          native: {}
+        }));
         for (let j in entry.Pollen) {
           let pollen = entry.Pollen[j];
           let channelid = deviceid + '.' + j;
@@ -401,12 +491,18 @@ async function setStates(result) {
         let entry = content[i];
         let partregion_id = entry.partregion_id != -1 ? entry.partregion_id : entry.region_id;
         let deviceid = adapter.namespace + '.region#' + partregion_id;
+        let json_index = {};
+        let json_text = {};
         for (let j in entry.Pollen) {
           let channelid = deviceid + '.' + j;
           let pollen = entry.Pollen[j];
           for (let k in pollen) {
             let riskindex = pollen[k];
             let stateid = channelid + '.index_' + k;
+            if (!json_index[k]) { json_index[k] = {}; }
+            if (!json_text[k]) { json_text[k] = {}; }
+            json_index[k][j] = getRiskNumber(riskindex);
+            json_text[k][j] = getRiskIndexText(riskindex, j);
             promise.push(await adapter.setStateAsync(stateid, { val: getRiskNumber(riskindex), ack: true }));
             stateid = channelid + '.text_' + k;
             promise.push(await adapter.setStateAsync(stateid, { val: getRiskIndexText(riskindex, j), ack: true }));
@@ -419,7 +515,21 @@ async function setStates(result) {
           }
         }
         image = true;
+
+        let stateid = deviceid + '.json_index_today';
+        promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(json_index.today || {}), ack: true }));
+        stateid = deviceid + '.json_index_tomorrow';
+        promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(json_index.tomorrow || {}), ack: true }));
+        stateid = deviceid + '.json_index_dayafter_to';
+        promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(json_index.dayafter_to || {}), ack: true }));
+        stateid = deviceid + '.json_text_today';
+        promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(json_text.today || {}), ack: true }));
+        stateid = deviceid + '.json_text_tomorrow';
+        promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(json_text.tomorrow || {}), ack: true }));
+        stateid = deviceid + '.json_text_dayafter_to';
+        promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(json_text.dayafter_to || {}), ack: true }));
       }
+
       let today = getDate(result.last_update);
       let tomorrow = datePlusdDays(today, 1);
       let dayaftertomorrow = datePlusdDays(today, 2);
