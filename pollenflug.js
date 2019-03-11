@@ -446,7 +446,7 @@ async function createObjects(result) {
             }
           });
           for (let k in pollen) {
-            if(k === 'dayafter_to') continue;
+            if (k === 'dayafter_to') continue;
             let riskindex = pollen[k];
             let stateid = channelid + '.index_' + k;
             promise.push(await adapter.setObjectNotExistsAsync(stateid, {
@@ -501,11 +501,11 @@ async function setStates(result) {
           let channelid = deviceid + '.' + j;
           let pollen = entry.Pollen[j];
           for (let k in pollen) {
-            if(k === 'dayafter_to') continue;
+            if (k === 'dayafter_to') continue;
             let riskindex = pollen[k];
             let stateid = channelid + '.index_' + k;
-            if (!json_index[k]) { json_index[k] = {}; }
-            if (!json_text[k]) { json_text[k] = {}; }
+            if (!json_index[k]) { json_index[k] = []; }
+            if (!json_text[k]) { json_text[k] = []; }
             if (!index[k]) { index[k] = {}; }
             if (!index[k][getRiskNumber(riskindex)]) {
               index[k][getRiskNumber(riskindex)] = [j];
@@ -513,8 +513,10 @@ async function setStates(result) {
               index[k][getRiskNumber(riskindex)].push(j);
             }
             if (getRiskNumber(riskindex) >= 0) {
-              json_index[k][j] = getRiskNumber(riskindex);
-              json_text[k][j] = getRiskIndexText(riskindex, j);
+              json_index[k].push({ 'Pollen': j, 'Riskindex': getRiskNumber(riskindex) });
+              json_text[k].push({ 'Pollen': j, 'Riskindex':  getRiskIndexText(riskindex, j) });
+              // json_index[k][j] = getRiskNumber(riskindex);
+              //json_text[k][j] = getRiskIndexText(riskindex, j);
             }
             promise.push(await adapter.setStateAsync(stateid, { val: getRiskNumber(riskindex), ack: true }));
             stateid = channelid + '.text_' + k;
@@ -537,8 +539,17 @@ async function setStates(result) {
           promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(json_index[day] || {}), ack: true }));
           stateid = deviceid + '.summary.json_text_' + day;
           promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(json_text[day] || {}), ack: true }));
+
+          let riskindex = {};
+          riskindex[day] = [];
+          for(let n=0; n<=6; n++) {
+            riskindex[day].push({
+              'Riskindex': n,
+              'Pollen': index[day][n] ? (index[day][n]).toString().replace(',',', ') : ''
+            });
+          }
           stateid = deviceid + '.summary.json_riskindex_' + day;
-          promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(index[day] || {}), ack: true }));
+          promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(riskindex[day] || {}), ack: true }));
           for (let l = 0; l <= 6; l++) {
             let value = index && index[day] && index[day][l] ? index[day][l].toString().replace(',', ', ') : '';
             let stateid = deviceid + '.riskindex_' + day + '.riskindex_' + l;
