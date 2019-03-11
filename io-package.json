@@ -1,9 +1,21 @@
 {
     "common": {
         "name": "pollenflug",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "title": "Pollen flight risk index",
         "news": {
+            "1.0.1": {
+                "en": "Bugfixing of version 1.0.0",
+                "de": "Fehlerbehebung von Version 1.0.0",
+                "ru": "Исправление версии 1.0.0",
+                "pt": "Correção de bugs da versão 1.0.0",
+                "nl": "Bugfixing van versie 1.0.0",
+                "fr": "Correction de bugs de la version 1.0.0",
+                "it": "Correzione di errori della versione 1.0.0",
+                "es": "Corrección de errores de la versión 1.0.0",
+                "pl": "Naprawianie błędów wersji 1.0.0",
+                "zh-cn": "版本1.0.0的修正错误"
+            },
             "1.0.0": {
                 "en": "Changed the pollen index for better use in VIS. Now you you values -1, 0, 1, 2, 3, 4, 5 ,6",
                 "de": "Der Pollenindex wurde für eine bessere Verwendung in VIS geändert. ",

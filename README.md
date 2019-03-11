@@ -110,7 +110,13 @@ on({id: "pollenflug.0.info.today"/*Today*/, change: "ne"}, (obj) => {
 
 ## Changelog
 
-### 1.0.0 (10.0.2019)
+### 1.0.1 (11.03.2019)
+* (Stübi) Delete all states for day after tommorrow 
+* (Stübi) Changed type of object riskindex_x from number to string
+* (Stübi) Changed sepaation of entries in riskindex_x from ',' to ', '
+* (Stübi) Deleted in summary (json) alle -1 entries
+
+### 1.0.0 (10.03.2019)
 * (Stübi) Changed the pollen index for better use in VIS. Now you you values -1, 0, 1, 2, 3, 4, 5 ,6
 * (Stübi) Add summary for today, tomorrow and the day after tomorrow in json format for every region
 

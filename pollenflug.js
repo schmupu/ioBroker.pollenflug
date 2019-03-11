@@ -262,6 +262,7 @@ async function createInfoObjects() {
       },
       native: {}
     }));
+    /*
     promise.push(await adapter.setObjectNotExistsAsync('info.dayaftertomorrow', {
       type: 'state',
       common: {
@@ -273,6 +274,7 @@ async function createInfoObjects() {
       },
       native: {}
     }));
+    */
     await Promise.all(promise);
   } catch (error) {
     adapter.log.error('Error creating Info Objects ' + error);
@@ -325,6 +327,7 @@ async function createImageObjects(result) {
             },
             native: {}
           }));
+          /*
           promise.push(await adapter.setObjectNotExistsAsync(channelid + '.image_dayaftertomorrow', {
             type: 'state',
             common: {
@@ -336,6 +339,7 @@ async function createImageObjects(result) {
             },
             native: {}
           }));
+          */
         }
         break; // only one call
       }
@@ -370,7 +374,8 @@ async function createObjects(result) {
             name: 'summary'
           }
         });
-        let days = ['today', 'tomorrow', 'dayafter_to'];
+        // let days = ['today', 'tomorrow', 'dayafter_to'];
+        let days = ['today', 'tomorrow'];
         for (let m in days) {
           let day = days[m];
           let stateid = deviceid + '.summary.json_index_' + day;
@@ -422,7 +427,7 @@ async function createObjects(result) {
               type: 'state',
               common: {
                 name: 'Riskindex ' + l,
-                type: 'number',
+                type: 'string',
                 role: 'state',
                 read: true,
                 write: false
@@ -441,6 +446,7 @@ async function createObjects(result) {
             }
           });
           for (let k in pollen) {
+            if(k === 'dayafter_to') continue;
             let riskindex = pollen[k];
             let stateid = channelid + '.index_' + k;
             promise.push(await adapter.setObjectNotExistsAsync(stateid, {
@@ -495,6 +501,7 @@ async function setStates(result) {
           let channelid = deviceid + '.' + j;
           let pollen = entry.Pollen[j];
           for (let k in pollen) {
+            if(k === 'dayafter_to') continue;
             let riskindex = pollen[k];
             let stateid = channelid + '.index_' + k;
             if (!json_index[k]) { json_index[k] = {}; }
@@ -505,8 +512,10 @@ async function setStates(result) {
             } else {
               index[k][getRiskNumber(riskindex)].push(j);
             }
-            json_index[k][j] = getRiskNumber(riskindex);
-            json_text[k][j] = getRiskIndexText(riskindex, j);
+            if (getRiskNumber(riskindex) >= 0) {
+              json_index[k][j] = getRiskNumber(riskindex);
+              json_text[k][j] = getRiskIndexText(riskindex, j);
+            }
             promise.push(await adapter.setStateAsync(stateid, { val: getRiskNumber(riskindex), ack: true }));
             stateid = channelid + '.text_' + k;
             promise.push(await adapter.setStateAsync(stateid, { val: getRiskIndexText(riskindex, j), ack: true }));
@@ -515,22 +524,23 @@ async function setStates(result) {
             let imageid = adapter.namespace + '.images.' + j;
             promise.push(await adapter.setStateAsync(imageid + '.image_today', { val: getImage('today', j), ack: true }));
             promise.push(await adapter.setStateAsync(imageid + '.image_tomorrow', { val: getImage('tomorrow', j), ack: true }));
-            promise.push(await adapter.setStateAsync(imageid + '.image_dayaftertomorrow', { val: getImage('dayaftertomorrow', j), ack: true }));
+            // promise.push(await adapter.setStateAsync(imageid + '.image_dayaftertomorrow', { val: getImage('dayaftertomorrow', j), ack: true }));
           }
         }
         image = true;
 
-        let days = ['today', 'tomorrow', 'dayafter_to'];
+        // let days = ['today', 'tomorrow', 'dayafter_to'];
+        let days = ['today', 'tomorrow'];
         for (let m in days) {
           let day = days[m];
           let stateid = deviceid + '.summary.json_index_' + day;
           promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(json_index[day] || {}), ack: true }));
           stateid = deviceid + '.summary.json_text_' + day;
-          promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(json_text[day] || {}),ack: true }));
+          promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(json_text[day] || {}), ack: true }));
           stateid = deviceid + '.summary.json_riskindex_' + day;
-          promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(index[day] || {}),ack: true }));
+          promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(index[day] || {}), ack: true }));
           for (let l = 0; l <= 6; l++) {
-            let value = index && index[day] && index[day][l] ? index[day][l].toString() : '';
+            let value = index && index[day] && index[day][l] ? index[day][l].toString().replace(',', ', ') : '';
             let stateid = deviceid + '.riskindex_' + day + '.riskindex_' + l;
             promise.push(await adapter.setStateAsync(stateid, { val: value, ack: true }));
           }
@@ -539,10 +549,10 @@ async function setStates(result) {
 
       let today = getDate(result.last_update);
       let tomorrow = datePlusdDays(today, 1);
-      let dayaftertomorrow = datePlusdDays(today, 2);
+      // let dayaftertomorrow = datePlusdDays(today, 2);
       promise.push(await adapter.setStateAsync('info.today', { val: today.toString(), ack: true }));
       promise.push(await adapter.setStateAsync('info.tomorrow', { val: tomorrow.toString(), ack: true }));
-      promise.push(await adapter.setStateAsync('info.dayaftertomorrow', { val: dayaftertomorrow.toString(), ack: true }));
+      // promise.push(await adapter.setStateAsync('info.dayaftertomorrow', { val: dayaftertomorrow.toString(), ack: true }));
       await Promise.all(promise);
     }
   } catch (error) {
