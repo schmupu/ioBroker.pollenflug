@@ -112,6 +112,7 @@ on({id: "pollenflug.0.info.today"/*Today*/, change: "ne"}, (obj) => {
 
 ### 1.0.2 (12.03.2019)
 * (Stübi) Bugfixing, of changing sepaation of entries in riskindex_x from ',' to ', '
+* (Stübi) unnecessary states will be deleted
 
 ### 1.0.1 (11.03.2019)
 * (Stübi) Delete all states for day after tommorrow 

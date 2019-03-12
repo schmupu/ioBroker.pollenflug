@@ -154,6 +154,23 @@ function getRiskNumber(index) {
   return number;
 }
 
+async function deleteOldState(deviceid) {
+  try {
+    if (deviceid) {
+      let states = await adapter.getStatesOfAsync(deviceid, deviceid);
+      for (let j in states) {
+        let stateid = states[j]._id.split('.').pop();
+        if (stateid.endsWith('_dayaftertomorrow') || stateid.endsWith('_dayafter_to') || stateid.startsWith('json_text_')) {
+          let id = states[j]._id.replace(adapter.config.namespace + '.', '');
+          await adapter.delObjectAsync(id);
+        }
+      }
+    }
+  } catch (error) {
+    adapter.log.error('Error deleting old States: ' + deviceid + ' / ' + error);
+  }
+}
+
 async function deleteDeviceRecursiveAsync(deviceid) {
   try {
     if (deviceid) {
@@ -209,6 +226,7 @@ async function deleteObjects(result) {
       for (let j in devices) {
         // let id = devices[j]._id.replace(adapter.namespace + '.', '');
         let id = devices[j]._id.split('.').pop();
+        await deleteOldState(id);
         let found = false;
         for (let i in content) {
           let entry = content[i];
@@ -514,8 +532,8 @@ async function setStates(result) {
               index[k][getRiskNumber(riskindex)].push(j);
             }
             if (getRiskNumber(riskindex) >= 0) {
-              json_index[k].push({ 
-                'Pollen': j, 
+              json_index[k].push({
+                'Pollen': j,
                 'Riskindex': getRiskNumber(riskindex),
                 'Riskindextext': getRiskIndexText(riskindex)
               });
@@ -554,11 +572,11 @@ async function setStates(result) {
 
           let riskindex = {};
           riskindex[day] = [];
-          for(let n=0; n<=6; n++) {
+          for (let n = 0; n <= 6; n++) {
             riskindex[day].push({
               'Riskindex': n,
               'Riskindextext': getRiskIndexText(n),
-              'Pollen': index[day][n] ? (index[day][n]).toString().replace(/,/g,', ') : ''
+              'Pollen': index[day][n] ? (index[day][n]).toString().replace(/,/g, ', ') : ''
             });
           }
           stateid = deviceid + '.summary.json_riskindex_' + day;
