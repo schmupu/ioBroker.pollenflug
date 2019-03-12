@@ -1,9 +1,21 @@
 {
     "common": {
         "name": "pollenflug",
-        "version": "1.0.1",
+        "version": "1.0.2",
         "title": "Pollen flight risk index",
         "news": {
+            "1.0.2": {
+                "en": "Bugfixing, of changing sepaation of entries in riskindex_x from ',' to ', '",
+                "de": "Bugfixing, Änderung der Trennung von Einträgen in riskindex_x von ',' in ','",
+                "ru": "Исправлена ​​ошибка изменения разделения записей в riskindex_x с ',' на ','",
+                "pt": "Bugfixing, de alterar a separação de entradas em riskindex_x de ',' para ','",
+                "nl": "Bugfixing, van veranderende sepaation van ingangen in riskindex_x van ',' naar ','",
+                "fr": "Correction de bugs, de modification de la séparation des entrées dans riskindex_x de ',' à ','",
+                "it": "Correzione di bug, di cambiare la sepaation delle voci in riskindex_x da ',' a ','",
+                "es": "Corrección de errores, de cambiar la separación de entradas en riskindex_x de ',' a ','",
+                "pl": "Naprawianie błędów, zmiana separacji wpisów w riskindex_x z „,” na „,”",
+                "zh-cn": "错误修正，将riskindex_x中条目的分隔从'，'更改为'，'"
+            },
             "1.0.1": {
                 "en": "Bugfixing of version 1.0.0",
                 "de": "Fehlerbehebung von Version 1.0.0",

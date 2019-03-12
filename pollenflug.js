@@ -545,13 +545,13 @@ async function setStates(result) {
           for(let n=0; n<=6; n++) {
             riskindex[day].push({
               'Riskindex': n,
-              'Pollen': index[day][n] ? (index[day][n]).toString().replace(',',', ') : ''
+              'Pollen': index[day][n] ? (index[day][n]).toString().replace(/,/g,', ') : ''
             });
           }
           stateid = deviceid + '.summary.json_riskindex_' + day;
           promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(riskindex[day] || {}), ack: true }));
           for (let l = 0; l <= 6; l++) {
-            let value = index && index[day] && index[day][l] ? index[day][l].toString().replace(',', ', ') : '';
+            let value = index && index[day] && index[day][l] ? index[day][l].toString().replace(/,/g, ', ') : '';
             let stateid = deviceid + '.riskindex_' + day + '.riskindex_' + l;
             promise.push(await adapter.setStateAsync(stateid, { val: value, ack: true }));
           }
