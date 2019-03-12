@@ -390,6 +390,7 @@ async function createObjects(result) {
             },
             native: {}
           }));
+          /*
           stateid = deviceid + '.summary.json_text_' + day;
           promise.push(await adapter.setObjectNotExistsAsync(stateid, {
             type: 'state',
@@ -402,6 +403,7 @@ async function createObjects(result) {
             },
             native: {}
           }));
+          */
           stateid = deviceid + '.summary.json_riskindex_' + day;
           promise.push(await adapter.setObjectNotExistsAsync(stateid, {
             type: 'state',
@@ -494,7 +496,7 @@ async function setStates(result) {
         let partregion_id = entry.partregion_id != -1 ? entry.partregion_id : entry.region_id;
         let deviceid = adapter.namespace + '.region#' + partregion_id;
         let json_index = {};
-        let json_text = {};
+        // let json_text = {};
         let json_riskindex = {};
         let index = {};
         for (let j in entry.Pollen) {
@@ -503,9 +505,8 @@ async function setStates(result) {
           for (let k in pollen) {
             if (k === 'dayafter_to') continue;
             let riskindex = pollen[k];
-            let stateid = channelid + '.index_' + k;
             if (!json_index[k]) { json_index[k] = []; }
-            if (!json_text[k]) { json_text[k] = []; }
+            // if (!json_text[k]) { json_text[k] = []; }
             if (!index[k]) { index[k] = {}; }
             if (!index[k][getRiskNumber(riskindex)]) {
               index[k][getRiskNumber(riskindex)] = [j];
@@ -513,11 +514,22 @@ async function setStates(result) {
               index[k][getRiskNumber(riskindex)].push(j);
             }
             if (getRiskNumber(riskindex) >= 0) {
-              json_index[k].push({ 'Pollen': j, 'Riskindex': getRiskNumber(riskindex) });
-              json_text[k].push({ 'Pollen': j, 'Riskindex':  getRiskIndexText(riskindex, j) });
+              json_index[k].push({ 
+                'Pollen': j, 
+                'Riskindex': getRiskNumber(riskindex),
+                'Riskindextext': getRiskIndexText(riskindex)
+              });
+              /*
+              json_text[k].push({ 
+                'Pollen': j, 
+                'Riskindextext':  getRiskIndexText(riskindex),
+                'Riskindex': getRiskNumber(riskindex)
+              });
+              */
               // json_index[k][j] = getRiskNumber(riskindex);
               //json_text[k][j] = getRiskIndexText(riskindex, j);
             }
+            let stateid = channelid + '.index_' + k;
             promise.push(await adapter.setStateAsync(stateid, { val: getRiskNumber(riskindex), ack: true }));
             stateid = channelid + '.text_' + k;
             promise.push(await adapter.setStateAsync(stateid, { val: getRiskIndexText(riskindex, j), ack: true }));
@@ -537,14 +549,15 @@ async function setStates(result) {
           let day = days[m];
           let stateid = deviceid + '.summary.json_index_' + day;
           promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(json_index[day] || {}), ack: true }));
-          stateid = deviceid + '.summary.json_text_' + day;
-          promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(json_text[day] || {}), ack: true }));
+          // stateid = deviceid + '.summary.json_text_' + day;
+          // promise.push(await adapter.setStateAsync(stateid, { val: JSON.stringify(json_text[day] || {}), ack: true }));
 
           let riskindex = {};
           riskindex[day] = [];
           for(let n=0; n<=6; n++) {
             riskindex[day].push({
               'Riskindex': n,
+              'Riskindextext': getRiskIndexText(n),
               'Pollen': index[day][n] ? (index[day][n]).toString().replace(/,/g,', ') : ''
             });
           }
