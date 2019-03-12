@@ -83,15 +83,13 @@ This format can more simply used in ioBroker.
 | 5 	| 2-3       | medium to high pollen concentration | 
 | 6   	| 3         | high pollen concentration           |
 
+**Pollen flight example:**
 ![ioBroker2](docs/iobroker-pollenflug2.png)
 
-
-URL addess of the pollen images from DWD
 ![ioBroker3](docs/iobroker-pollenflug3.png)
 
 
-For Example, pollen flight today for Hasel
-
+URL addess of the pollen images from DWD
 ![ioBroker4](https://www.dwd.de/DWD/warnungen/medizin/pollen/pollen_1_0.png)
 
 
@@ -137,7 +135,7 @@ on({id: "pollenflug.0.info.today"/*Today*/, change: "ne"}, (obj) => {
 ## License
 The MIT License (MIT)
 
-Copyright (c) 2019 Thorsten <thorsten@stueben.de> / <https://github.com/schmupu>
+Copyright (c) 2019 Thorsten Stueben <thorsten@stueben.de> / <https://github.com/schmupu>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
