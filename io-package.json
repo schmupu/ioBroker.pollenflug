@@ -1,9 +1,21 @@
 {
     "common": {
         "name": "pollenflug",
-        "version": "1.0.2",
+        "version": "1.0.3",
         "title": "Pollen flight risk index",
         "news": {
+            "1.0.3": {
+                "en": "Bugfixing, changing logo size",
+                "de": "Bugfixing, Logogröße ändern",
+                "ru": "Исправление ошибок, изменение размера логотипа",
+                "pt": "Correção de bugs, alterando o tamanho do logotipo",
+                "nl": "Bugfixing, wijziging van de grootte van het logo",
+                "fr": "Correction de bugs, modification de la taille du logo",
+                "it": "Bugfixing, modifica delle dimensioni del logo",
+                "es": "Corrección de errores, cambio de tamaño del logotipo",
+                "pl": "Poprawianie błędów, zmiana rozmiaru logo",
+                "zh-cn": "修正错误，更改徽标大小"
+            },
             "1.0.2": {
                 "en": "Bugfixing, of changing sepaation of entries in riskindex_x from ',' to ', '",
                 "de": "Bugfixing, Änderung der Trennung von Einträgen in riskindex_x von ',' in ','",
