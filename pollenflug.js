@@ -621,7 +621,7 @@ async function pollenflugRequest() {
   let url = adapter.config.url || 'https://opendata.dwd.de/climate_environment/health/alerts/s31fg.json';
   try {
     adapter.log.info('Requesting DWD pollen information now.');
-    result = await request(url, { method: 'GET', json: true, timeout: 5000 });
+    result = await request(url, { method: 'GET', json: true, rejectUnauthorized: false, timeout: 5000 });
   } catch (error) {
     adapter.log.error('Error requesting URL ' + url + ' (' + error + ')');
   }
