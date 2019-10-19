@@ -623,7 +623,7 @@ async function pollenflugRequest() {
     adapter.log.info('Requesting DWD pollen information now.');
     result = await request(url, { method: 'GET', json: true, timeout: 5000 });
   } catch (error) {
-    adapter.log.error('Error requesting URL ' + url);
+    adapter.log.error('Error requesting URL ' + url + ' (' + error + ')');
   }
   return result;
 }
