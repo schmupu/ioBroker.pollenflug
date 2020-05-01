@@ -1,9 +1,21 @@
 {
     "common": {
         "name": "pollenflug",
-        "version": "1.0.4",
+        "version": "1.0.5",
         "title": "Pollen flight risk index",
         "news": {
+            "1.0.5": {
+                "en": "add sentry to the adapter",
+                "de": "Adapter unterstützt Sentry",
+                "ru": "добавить часового к адаптеру",
+                "pt": "adicionar sentinela ao adaptador",
+                "nl": "voeg schildwacht toe aan de adapter",
+                "fr": "ajouter une sentinelle à l'adaptateur",
+                "it": "aggiungi sentinella all'adattatore",
+                "es": "agregar centinela al adaptador",
+                "pl": "dodaj wartownik do adaptera",
+                "zh-cn": "将哨兵添加到适配器"
+            },
             "1.0.4": {
                 "en": "Bugfixing",
                 "de": "Bugfixing",
@@ -145,7 +157,15 @@
         "readme": "https://github.com/schmupu/ioBroker.pollenflug/blob/master/README.md",
         "loglevel": "info",
         "type": "weather",
-        "restartAdapters": []
+        "restartAdapters": [],
+        "connectionType": "local",
+        "dataSource": "push",
+        "plugins": {
+            "sentry": {
+                "dsn": "https://38c0226866df4a85b5db5c306d0a3213@sentry.iobroker.net/60",
+                "pathWhitelist": []
+            }
+        }
     },
     "native": {
         "pollInterval": "5",
