@@ -50,7 +50,7 @@ function startAdapter(options) {
       setTimeout(() => adapter.stop());
     }
     let obj = await adapter.getForeignObjectAsync('system.config');
-    systemLanguage = (obj.common.language).toUpperCase();
+    if (obj && obj.common && obj.common.language) systemLanguage = (obj.common.language).toUpperCase();
     await main();
   });
   return adapter;
