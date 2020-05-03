@@ -1,9 +1,21 @@
 {
     "common": {
         "name": "pollenflug",
-        "version": "1.0.5",
+        "version": "1.0.6",
         "title": "Pollen flight risk index",
         "news": {
+            "1.0.6": {
+                "en": "User can enable/disable sentry logging",
+                "de": "Der Benutzer kann die Wachprotokollierung aktivieren / deaktivieren",
+                "ru": "Пользователь может включить / отключить регистрацию",
+                "pt": "O usuário pode ativar / desativar o registro de sentinela",
+                "nl": "De gebruiker kan logboekregistratie inschakelen / uitschakelen",
+                "fr": "L'utilisateur peut activer / désactiver la journalisation des sentinelles",
+                "it": "L'utente può abilitare / disabilitare la registrazione delle sentinelle",
+                "es": "El usuario puede habilitar / deshabilitar el registro de centinela",
+                "pl": "Użytkownik może włączyć / wyłączyć rejestrowanie sentry",
+                "zh-cn": "用户可以启用/禁用哨兵日志记录"
+            },
             "1.0.5": {
                 "en": "add sentry to the adapter",
                 "de": "Adapter unterstützt Sentry",
@@ -170,7 +182,8 @@
     "native": {
         "pollInterval": "5",
         "region": "*",
-        "url": "https://opendata.dwd.de/climate_environment/health/alerts/s31fg.json"
+        "url": "https://opendata.dwd.de/climate_environment/health/alerts/s31fg.json",
+        "sentry_enable": true
     },
     "objects": [],
     "instanceObjects": []
