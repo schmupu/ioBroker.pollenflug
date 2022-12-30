@@ -39,7 +39,7 @@
     "eslint": "^5.16.0",
     "eslint-plugin-react": "^7.19.0",
     "gulp": "^4.0.2",
-    "mocha": "^7.1.2"
+    "mocha": "^10.2.0"
   },
   "engines": {
     "node": ">=8.0.0"
